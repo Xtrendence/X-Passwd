@@ -28,7 +28,15 @@ class PasswordForm extends StatelessWidget {
 			appBar: AppBar(
 				title: Text(capitalize(this.action) + " Password"),
 				backgroundColor: accentColor,
-				elevation: 0.0
+				elevation: 0.0,
+				actions: <Widget>[
+					if(this.action == "edit") IconButton(
+						icon: Icon(Icons.delete),
+						onPressed: () {
+						
+						},
+					)
+				]
 			),
 			body: ListView.builder(
 				itemCount: 1,
@@ -120,15 +128,20 @@ class PasswordForm extends StatelessWidget {
 							Padding(
 								padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 								child: InkWell(
-									onTap: () {
+									onTap: () async {
 										Utils utils = new Utils();
 										
-										utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
-										
-										Navigator.push(
-											context,
-											MaterialPageRoute(builder: (context) => PasswordList())
-										);
+										if(inputTitle.text.toString().trim() != "" && inputPassword.text.toString().trim() != "") {
+											await utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+											
+											Navigator.push(
+												context,
+												MaterialPageRoute(builder: (context) => PasswordList())
+											);
+										}
+										else {
+											utils.notify(context, "Title and password need to be provided.");
+										}
 									},
 									child: Card(
 										color: accentColor,
@@ -145,7 +158,7 @@ class PasswordForm extends StatelessWidget {
 																		crossAxisAlignment: CrossAxisAlignment.center,
 																		mainAxisAlignment: MainAxisAlignment.center,
 																		children: <Widget>[
-																			Text("Confirm", style: TextStyle(
+																			Text((this.action == "add") ? "Add Password" : "Update Password", style: TextStyle(
 																				fontSize: 24,
 																				fontWeight: FontWeight.bold,
 																				color: backgroundColorLight,

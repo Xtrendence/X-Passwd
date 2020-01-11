@@ -56,7 +56,7 @@ class LoginForm extends StatelessWidget {
 											),
 										),
 										Padding(
-											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+											padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
 											child: Card(
 												child: Column(
 													children: <Widget>[
@@ -75,28 +75,28 @@ class LoginForm extends StatelessWidget {
 												),
 											),
 										),
-										InkWell(
-											onTap: () async {
-												Utils utils = new Utils();
-												
-												String password = inputPassword.text.toString().trim();
-												String currentPassword = await utils.getPassword();
-												
-												if(password == currentPassword) {
-													Navigator.push(
-														context,
-														MaterialPageRoute(builder: (context) => PasswordList())
-													);
-												}
-												else {
-													utils.notify(context, "Wrong password.");
-												}
-											},
-											child: Padding(
-												padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-												child: Container(
-													child: Align(
-														alignment: Alignment.bottomCenter,
+										Padding(
+											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+											child: Container(
+												child: Align(
+													alignment: Alignment.bottomCenter,
+													child: InkWell(
+														onTap: () async {
+															Utils utils = new Utils();
+															
+															String password = inputPassword.text.toString().trim();
+															String currentPassword = await utils.getPassword();
+															
+															if(password == currentPassword) {
+																Navigator.push(
+																	context,
+																	MaterialPageRoute(builder: (context) => PasswordList())
+																);
+															}
+															else {
+																utils.notify(context, "Wrong password.");
+															}
+														},
 														child: Card(
 															color: accentColor,
 															elevation: 0.2,
@@ -117,27 +117,27 @@ class LoginForm extends StatelessWidget {
 												),
 											),
 										),
-										InkWell(
-											onTap: () {
-												if(inputPassword.text.toString().trim() != "") {
-													print("Value: " + inputPassword.text.toString());
-													Navigator.push(
-														context,
-														MaterialPageRoute(builder: (context) => CreateForm.autoFill(inputPassword.text.toString()))
-													);
-												}
-												else {
-													Navigator.push(
-														context,
-														MaterialPageRoute(builder: (context) => CreateForm())
-													);
-												}
-											},
-											child: Padding(
-												padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-												child: Container(
-													child: Align(
-														alignment: Alignment.bottomCenter,
+										Padding(
+											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+											child: Container(
+												child: Align(
+													alignment: Alignment.bottomCenter,
+													child: InkWell(
+														onTap: () {
+															if(inputPassword.text.toString().trim() != "") {
+																print("Value: " + inputPassword.text.toString());
+																Navigator.push(
+																	context,
+																	MaterialPageRoute(builder: (context) => CreateForm.autoFill(inputPassword.text.toString()))
+																);
+															}
+															else {
+																Navigator.push(
+																	context,
+																	MaterialPageRoute(builder: (context) => CreateForm())
+																);
+															}
+														},
 														child: Card(
 															color: accentColorLight,
 															elevation: 0.2,

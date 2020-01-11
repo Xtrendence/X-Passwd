@@ -19,13 +19,18 @@ class PasswordList extends StatelessWidget {
 	
 	@override
 	Widget build(BuildContext context) {
-		
 		return Scaffold(
 			appBar: AppBar(
 				title: Text("X:/Passwd"),
 				backgroundColor: accentColor,
 				elevation: 0.0,
 				actions: <Widget>[
+					IconButton(
+						icon: Icon(Icons.search),
+						onPressed: () {
+						
+						},
+					),
 					IconButton(
 						icon: Icon(Icons.add_circle_outline),
 						onPressed: () {
@@ -37,7 +42,7 @@ class PasswordList extends StatelessWidget {
 					)
 				],
 			),
-			body: ListView.builder(
+			body: (this.ids.length > 0) ? ListView.builder(
 				itemCount: this.ids.length,
 				itemBuilder: (context, index) {
 					return Padding(
@@ -89,7 +94,44 @@ class PasswordList extends StatelessWidget {
 						),
 					);
 				}
-			)
+			) : Stack(
+				children: <Widget>[
+					Column(
+						children: <Widget>[
+							Padding(
+								padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+								child: InkWell(
+									onTap: () {
+										Navigator.push(
+											context,
+											MaterialPageRoute(builder: (context) => PasswordForm("add"))
+										);
+									},
+									child: Card(
+										color: accentColor,
+										child: Column(
+											children: <Widget>[
+												Padding(
+													padding: const EdgeInsets.all(20),
+													child: Row(
+														children: <Widget>[
+															Text("Add a password...", style: TextStyle(
+																fontWeight: FontWeight.bold,
+																color: backgroundColorLight,
+																fontSize: 18
+															)),
+														],
+													),
+												)
+											],
+										),
+									),
+								),
+							),
+						],
+					),
+				],
+			),
 		);
 	}
 }

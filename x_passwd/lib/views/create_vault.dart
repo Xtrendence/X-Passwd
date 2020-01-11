@@ -67,7 +67,7 @@ class CreateForm extends StatelessWidget {
 											),
 										),
 										Padding(
-											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+											padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
 											child: Card(
 												child: Column(
 													children: <Widget>[
@@ -87,7 +87,7 @@ class CreateForm extends StatelessWidget {
 											),
 										),
 										Padding(
-											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+											padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
 											child: Card(
 												child: Column(
 													children: <Widget>[
@@ -106,35 +106,35 @@ class CreateForm extends StatelessWidget {
 												),
 											),
 										),
-										InkWell(
-											onTap: () async {
-												Utils utils = new Utils();
-												
-												String newPassword = inputPassword.text.toString().trim();
-												String repeatPassword = inputPasswordRepeat.text.toString().trim();
-												
-												if(newPassword != "" && repeatPassword != "") {
-													if(newPassword == repeatPassword) {
-														await utils.setPassword(newPassword);
-														
-														Navigator.push(
-															context,
-															MaterialPageRoute(builder: (context) => PasswordList())
-														);
-													}
-													else {
-														utils.notify(context, "Passwords didn't match.");
-													}
-												}
-												else {
-													utils.notify(context, "Please fill out both fields.");
-												}
-											},
-											child: Padding(
-												padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-												child: Container(
-													child: Align(
-														alignment: Alignment.bottomCenter,
+										Padding(
+											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+											child: Container(
+												child: Align(
+													alignment: Alignment.bottomCenter,
+													child: InkWell(
+														onTap: () async {
+															Utils utils = new Utils();
+															
+															String newPassword = inputPassword.text.toString().trim();
+															String repeatPassword = inputPasswordRepeat.text.toString().trim();
+															
+															if(newPassword != "" && repeatPassword != "") {
+																if(newPassword == repeatPassword) {
+																	await utils.setPassword(newPassword);
+																	
+																	Navigator.push(
+																		context,
+																		MaterialPageRoute(builder: (context) => PasswordList())
+																	);
+																}
+																else {
+																	utils.notify(context, "Passwords didn't match.");
+																}
+															}
+															else {
+																utils.notify(context, "Please fill out both fields.");
+															}
+														},
 														child: Card(
 															color: accentColor,
 															elevation: 0.2,
@@ -155,15 +155,15 @@ class CreateForm extends StatelessWidget {
 												),
 											),
 										),
-										InkWell(
-											onTap: () {
-											
-											},
-											child: Padding(
-												padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-												child: Container(
-													child: Align(
-														alignment: Alignment.bottomCenter,
+										Padding(
+											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+											child: Container(
+												child: Align(
+													alignment: Alignment.bottomCenter,
+													child: InkWell(
+														onTap: () {
+														
+														},
 														child: Card(
 															color: accentColorLight,
 															elevation: 0.2,
