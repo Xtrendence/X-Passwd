@@ -107,19 +107,22 @@ class LoginForm extends StatelessWidget {
 											child: Align(
 												alignment: Alignment.bottomCenter,
 												child: InkWell(
-													onTap: () {
+													onTap: () async {
+														Utils utils = new Utils();
+														bool vaultExists = await utils.vaultExists();
 														if(inputPassword.text.toString().trim() != "") {
 															Navigator.push(
 																context,
-																MaterialPageRoute(builder: (context) => CreateForm.autoFill(inputPassword.text.toString()))
+																MaterialPageRoute(builder: (context) => CreateForm.autoFill(vaultExists, inputPassword.text.toString()))
 															);
 
 															inputPassword.clear();
 														}
 														else {
+															
 															Navigator.push(
 																context,
-																MaterialPageRoute(builder: (context) => CreateForm())
+																MaterialPageRoute(builder: (context) => CreateForm(vaultExists))
 															);
 														}
 														
@@ -158,12 +161,16 @@ class LoginForm extends StatelessWidget {
 		String password = inputPassword.text.toString().trim();
 		String currentPassword = await utils.getPassword();
 		
+		String list = await utils.read();
+		
+		print(list);
+		
 		if(password == currentPassword) {
 			inputPassword.clear();
 			
 			Navigator.push(
 				context,
-				MaterialPageRoute(builder: (context) => PasswordList())
+				MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(list))
 			);
 			
 			theme.statusColorAccent();

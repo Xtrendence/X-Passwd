@@ -21,7 +21,7 @@ void main() async {
         theme.statusColorBackground();
     }
     else {
-        runApp(App(CreateForm(), list));
+        runApp(App(CreateForm(vaultExists), list));
         theme.statusColorAccent();
     }
 }

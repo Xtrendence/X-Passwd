@@ -9,11 +9,15 @@ import 'package:x_passwd/views/password_list.dart';
 AppTheme theme = new AppTheme();
 
 class CreateForm extends StatelessWidget {
+	bool vaultExists;
 	String password = null;
 	
-	CreateForm();
+	CreateForm(bool vaultExistence) {
+		this.vaultExists = vaultExistence;
+	}
 	
-	CreateForm.autoFill(String pass) {
+	CreateForm.autoFill(bool vaultExistence, String pass) {
+		this.vaultExists = vaultExistence;
 		this.password = pass;
 	}
 	
@@ -27,13 +31,7 @@ class CreateForm extends StatelessWidget {
 			appBar: AppBar(
 				backgroundColor: theme.getTheme()["accentColor"],
 				elevation: 0.0,
-				leading: IconButton(
-					icon: Icon(Icons.arrow_back),
-					onPressed: () async {
-						Navigator.of(context).pop();
-						theme.statusColorBackground();
-					}
-				),
+				leading: getBackButton(context),
 			),
 			body: Builder(
 				builder: (context) =>
@@ -145,9 +143,11 @@ class CreateForm extends StatelessWidget {
 																						inputPassword.clear();
 																						inputPasswordRepeat.clear();
 																						
+																						String list = await utils.read();
+																						
 																						Navigator.push(
 																							context,
-																							MaterialPageRoute(builder: (context) => PasswordList())
+																							MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(list))
 																						);
 																						
 																						theme.statusColorAccent();
@@ -227,5 +227,17 @@ class CreateForm extends StatelessWidget {
 					),
 			)
 		);
+	}
+	
+	getBackButton(context) {
+		if(this.vaultExists) {
+			return IconButton(
+				icon: Icon(Icons.arrow_back),
+				onPressed: () async {
+					Navigator.of(context).pop();
+					theme.statusColorBackground();
+				}
+			);
+		}
 	}
 }

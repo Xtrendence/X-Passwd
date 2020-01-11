@@ -169,11 +169,13 @@ class PasswordForm extends StatelessWidget {
 										Utils utils = new Utils();
 										
 										if(inputTitle.text.toString().trim() != "" && inputPassword.text.toString().trim() != "") {
-											utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+											await utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+											
+											String list = await utils.read();
 											
 											Navigator.push(
 												context,
-												MaterialPageRoute(builder: (context) => PasswordList())
+												MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(list))
 											);
 											
 											theme.statusColorAccent();
@@ -220,14 +222,15 @@ class PasswordForm extends StatelessWidget {
 			)
 		);
 	}
+	
+	String capitalize(String input) {
+		if (input == null) {
+			throw new ArgumentError("string: $input");
+		}
+		if (input.length == 0) {
+			return input;
+		}
+		return input[0].toUpperCase() + input.substring(1);
+	}
 }
 
-String capitalize(String input) {
-	if (input == null) {
-		throw new ArgumentError("string: $input");
-	}
-	if (input.length == 0) {
-		return input;
-	}
-	return input[0].toUpperCase() + input.substring(1);
-}

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +16,7 @@ AppTheme theme = new AppTheme();
 
 class PasswordList extends StatelessWidget {
 	Map passwords;
-	List ids = new List(0);
+	List ids;
 	
 	PasswordList();
 	
@@ -34,7 +35,7 @@ class PasswordList extends StatelessWidget {
 					backgroundColor: theme.getTheme()["accentColor"],
 					elevation: 0.0,
 					leading: IconButton(
-						icon: Icon(Icons.arrow_back),
+						icon: Icon(Icons.power_settings_new),
 						onPressed: () async {
 							Navigator.of(context).pop();
 							
@@ -51,7 +52,7 @@ class PasswordList extends StatelessWidget {
 							else {
 								Navigator.push(
 									context,
-									MaterialPageRoute(builder: (context) => CreateForm())
+									MaterialPageRoute(builder: (context) => CreateForm(vaultExists))
 								);
 							}
 							theme.statusColorBackground();
@@ -89,13 +90,19 @@ class PasswordList extends StatelessWidget {
 				body: (this.ids.length > 0) ? ListView.builder(
 					itemCount: this.ids.length,
 					itemBuilder: (context, index) {
+						String id = this.ids[index];
+						Map<String, dynamic> item = jsonDecode(this.passwords[id]);
+						print(item);
+						String title = item["title"];
+						String url = item["url"];
+						
 						return Padding(
 							padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 							child: InkWell(
 								onTap: () {
 									Navigator.push(
 										context,
-										MaterialPageRoute(builder: (context) => PasswordForm.edit("edit", this.ids[index]))
+										MaterialPageRoute(builder: (context) => PasswordForm.edit("edit", id))
 									);
 									theme.statusColorAccent();
 								},
@@ -110,7 +117,7 @@ class PasswordList extends StatelessWidget {
 													children: <Widget>[
 														Padding(
 															padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-															child: Text(this.passwords[ids[index]]["title"], style: TextStyle(
+															child: Text(title, style: TextStyle(
 																fontWeight: FontWeight.bold,
 																color: theme.getTheme()["textColorDark"],
 																fontSize: 18
@@ -118,7 +125,7 @@ class PasswordList extends StatelessWidget {
 														),
 														Padding(
 															padding: const EdgeInsets.all(10),
-															child: Text(this.passwords[ids[index]]["url"], style: TextStyle(
+															child: Text(url, style: TextStyle(
 																fontStyle:FontStyle.italic,
 																color: theme.getTheme()["textColorBright"]
 															)),

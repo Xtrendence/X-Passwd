@@ -14,9 +14,9 @@ class Utils {
 	save(String title, String url, String password, String notes) async {
 		String id = generateID();
 		
-		Object object = { title:title, url:url, password:password, notes:notes };
+		Map<String, dynamic> content = { "title":title, "url":url, "password":password, "notes":notes };
 		
-		String json = jsonEncode(object);
+		String json = jsonEncode(content);
 		
 		String userPassword = await getPassword();
 		
@@ -30,7 +30,27 @@ class Utils {
 	read() async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
 
-		Object stored = await storage.readAll();
+		Map<String, String> stored = await storage.readAll();
+		
+		stored.remove("password");
+		
+		List ids = stored.keys.toList();
+		
+		for(int i = 0; i < ids.length; i++) {
+			String id = ids[i];
+			
+			Map<String, dynamic> item = jsonDecode(stored[id]);
+			
+			String ciphertext = item["ciphertext"];
+			IV iv = IV.fromBase64(item["iv"]);
+			Uint8List salt = base64.decode(item["salt"]);
+			
+			String hash = await argonWithSalt(await getPassword(), salt);
+			
+			String plaintext = await aesDecrypt(ciphertext, hash, iv);
+			
+			stored[id] = plaintext;
+		}
 		
 		return jsonEncode(stored);
 	}
@@ -41,18 +61,17 @@ class Utils {
 	}
 	
 	aesEncrypt(String plaintext, String password) async {
-		String hash = argon(password);
-		
-		print(hash);
+		Map<String, dynamic> argonHash = await argon(password);
+		String hash = argonHash["hash"];
 		
 		Key key = Key.fromUtf8(hash);
-		IV iv = IV.fromLength(16);
+		IV iv = IV.fromBase64(base64.encode(randomBytes(16)));
 		
 		Encrypter aes = Encrypter(AES(key, mode: AESMode.ctr));
 		
 		String encrypted = aes.encrypt(plaintext, iv: iv).base64;
 		
-		return jsonEncode({ "ciphertext":encrypted, "iv":iv });
+		return jsonEncode({ "ciphertext":encrypted, "iv":iv.base64, "salt":argonHash["salt"] });
 	}
 	
 	aesDecrypt(String ciphertext, String password, IV iv) async {
@@ -68,11 +87,27 @@ class Utils {
 	}
 	
 	argon(String password) async {
-		Uint8List password = utf8.encode("password");
-		Uint8List salt = utf8.encode(randomBytes(16).toString());
+		Uint8List pass = utf8.encode(password);
+
+		Uint8List salt = utf8.encode(base64.encode(randomBytes(16)));
 		
-		Enc.Argon2 argon2 = Enc.Argon2(iterations: 16, hashLength: 32, memory: 256, parallelism: 2);
-		return await argon2.argon2i(password, salt);
+		Enc.Argon2 argon2 = Enc.Argon2(iterations: 16, hashLength: 22, memory: 256, parallelism: 2);
+		
+		String hash = base64.encode(await argon2.argon2id(pass, salt));
+		
+		Map<String, String> result = { "hash":hash, "salt":base64.encode(salt) };
+		
+		return result;
+	}
+	
+	argonWithSalt(String password, Uint8List salt) async {
+		Uint8List pass = utf8.encode(password);
+		
+		Enc.Argon2 argon2 = Enc.Argon2(iterations: 16, hashLength: 22, memory: 256, parallelism: 2);
+		
+		String hash = base64.encode(await argon2.argon2id(pass, salt));
+		
+		return hash;
 	}
 
 	setPassword(String password) async {
@@ -97,7 +132,7 @@ class Utils {
 	
 	generateID() {
 		String timestamp = new DateTime.now().millisecondsSinceEpoch.toString();
-		String bytes = randomBytes(10).toString();
+		String bytes = base64.encode(randomBytes(10));
 		return timestamp + "-" + bytes;
 	}
 	
