@@ -92,7 +92,6 @@ class PasswordList extends StatelessWidget {
 					itemBuilder: (context, index) {
 						String id = this.ids[index];
 						Map<String, dynamic> item = jsonDecode(this.passwords[id]);
-						print(item);
 						String title = item["title"];
 						String url = item["url"];
 						

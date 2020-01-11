@@ -33,43 +33,55 @@ class PasswordForm extends StatelessWidget {
 				title: Text(capitalize(this.action) + " Password"),
 				backgroundColor: theme.getTheme()["accentColor"],
 				elevation: 0.0,
+				leading: IconButton(
+					icon: Icon(Icons.arrow_back),
+					onPressed: () async {
+						Navigator.of(context).pop();
+						theme.statusColorAccent();
+					}
+				),
 				actions: <Widget>[
 					if(this.action == "edit") IconButton(
 						icon: Icon(Icons.delete),
-						onPressed: () {
-							return AlertDialog(
-								title: Text("Confirmation"),
-								content: Text("Are you sure you want to delete this password?"),
-								actions: [
-									FlatButton(
-										onPressed: () {
-											Navigator.of(context).pop();
-										},
-										child: Text("Cancel", style: TextStyle(
-											fontWeight: FontWeight.bold,
-											color: theme.getTheme()["accentColor"],
-											fontSize: 18
-										)),
-									),
-									FlatButton(
-										onPressed: () async {
-											Utils utils = new Utils();
-											
-											await utils.remove(passwordID);
-											
-											Navigator.push(
-												context,
-												MaterialPageRoute(builder: (context) => PasswordList())
-											);
-											theme.statusColorAccent();
-										},
-										child: Text("Delete", style: TextStyle(
-											fontWeight: FontWeight.bold,
-											color: theme.getTheme()["accentColorDark"],
-											fontSize: 18
-										)),
-									),
-								],
+						onPressed: () async {
+							showDialog(
+								context: context,
+								child: AlertDialog(
+									title: Text("Confirmation"),
+									content: Text("Are you sure you want to delete this password?"),
+									actions: [
+										FlatButton(
+											onPressed: () {
+												Navigator.of(context).pop();
+											},
+											child: Text("Cancel", style: TextStyle(
+												fontWeight: FontWeight.bold,
+												color: theme.getTheme()["accentColor"],
+												fontSize: 18
+											)),
+										),
+										FlatButton(
+											onPressed: () async {
+												Utils utils = new Utils();
+												
+												await utils.remove(passwordID);
+												
+												String list = await utils.read();
+												
+												Navigator.push(
+													context,
+													MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(list))
+												);
+												theme.statusColorAccent();
+											},
+											child: Text("Delete", style: TextStyle(
+												fontWeight: FontWeight.bold,
+												color: theme.getTheme()["accentColorDark"],
+												fontSize: 18
+											)),
+										),
+									],
+								),
 							);
 						},
 					)
