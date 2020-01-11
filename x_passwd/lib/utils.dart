@@ -15,7 +15,7 @@ class Utils {
 		
 		String json = jsonEncode(object);
 		
-		String encrypted = await aesEncrypt(json, password);
+		String encrypted = await aesEncrypt(json, getPassword());
 	
 		SharedPreferences preferences = await SharedPreferences.getInstance();
 		
@@ -42,7 +42,7 @@ class Utils {
 		
 		Encrypter aes = Encrypter(AES(key, mode: AESMode.ctr));
 		
-		return aes.encrypt(plaintext, iv: iv).base64;
+		return jsonEncode({ "ciphertext":aes.encrypt(plaintext, iv: iv).base64, "iv":iv });
 	}
 	
 	aesDecrypt(String ciphertext, String password, IV iv) async {
