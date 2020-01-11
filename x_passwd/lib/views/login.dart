@@ -7,11 +7,10 @@ import 'package:x_passwd/views/password_list.dart';
 import '../utils.dart';
 
 class LoginForm extends StatelessWidget {
+	final inputPassword = TextEditingController(text: "");
 	
 	@override
 	Widget build(BuildContext context) {
-		final inputPassword = TextEditingController();
-		
 		return new Scaffold(
 			backgroundColor: accentColor,
 			body: Builder(
@@ -88,6 +87,8 @@ class LoginForm extends StatelessWidget {
 															String currentPassword = await utils.getPassword();
 															
 															if(password == currentPassword) {
+																inputPassword.clear();
+																
 																Navigator.push(
 																	context,
 																	MaterialPageRoute(builder: (context) => PasswordList())
@@ -126,10 +127,13 @@ class LoginForm extends StatelessWidget {
 														onTap: () {
 															if(inputPassword.text.toString().trim() != "") {
 																print("Value: " + inputPassword.text.toString());
+																
 																Navigator.push(
 																	context,
 																	MaterialPageRoute(builder: (context) => CreateForm.autoFill(inputPassword.text.toString()))
 																);
+																
+																inputPassword.clear();
 															}
 															else {
 																Navigator.push(

@@ -122,6 +122,9 @@ class CreateForm extends StatelessWidget {
 																if(newPassword == repeatPassword) {
 																	await utils.setPassword(newPassword);
 																	
+																	inputPassword.clear();
+																	inputPasswordRepeat.clear();
+																	
 																	Navigator.push(
 																		context,
 																		MaterialPageRoute(builder: (context) => PasswordList())
@@ -162,7 +165,8 @@ class CreateForm extends StatelessWidget {
 													alignment: Alignment.bottomCenter,
 													child: InkWell(
 														onTap: () {
-														
+															inputPassword.clear();
+															inputPasswordRepeat.clear();
 														},
 														child: Card(
 															color: accentColorLight,
