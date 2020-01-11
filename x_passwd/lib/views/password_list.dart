@@ -4,10 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:x_passwd/main.dart';
+import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/utils.dart';
 import 'package:x_passwd/views/create_vault.dart';
 import 'package:x_passwd/views/login.dart';
 import 'package:x_passwd/views/password_form.dart';
+import 'package:x_passwd/views/settings.dart';
+
+AppTheme theme = new AppTheme();
 
 class PasswordList extends StatelessWidget {
 	Map passwords;
@@ -22,12 +26,12 @@ class PasswordList extends StatelessWidget {
 	
 	@override
 	Widget build(BuildContext context) {
+		
 		return WillPopScope(
 			onWillPop: () async => false,
 			child: Scaffold(
 				appBar: AppBar(
-					title: Text("X:/Passwd"),
-					backgroundColor: accentColor,
+					backgroundColor: theme.getTheme()["accentColor"],
 					elevation: 0.0,
 					leading: IconButton(
 						icon: Icon(Icons.arrow_back),
@@ -50,13 +54,24 @@ class PasswordList extends StatelessWidget {
 									MaterialPageRoute(builder: (context) => CreateForm())
 								);
 							}
+							theme.statusColorBackground();
 						}
 					),
 					actions: <Widget>[
 						IconButton(
+							icon: Icon(Icons.settings),
+							onPressed: () {
+								Navigator.push(
+									context,
+									MaterialPageRoute(builder: (context) => Settings())
+								);
+								theme.statusColorAccent();
+							},
+						),
+						IconButton(
 							icon: Icon(Icons.search),
 							onPressed: () {
-							
+								theme.statusColorAccent();
 							},
 						),
 						IconButton(
@@ -66,6 +81,7 @@ class PasswordList extends StatelessWidget {
 									context,
 									MaterialPageRoute(builder: (context) => PasswordForm("add"))
 								);
+								theme.statusColorAccent();
 							},
 						)
 					],
@@ -81,6 +97,7 @@ class PasswordList extends StatelessWidget {
 										context,
 										MaterialPageRoute(builder: (context) => PasswordForm.edit("edit", this.ids[index]))
 									);
+									theme.statusColorAccent();
 								},
 								child: Card(
 									child: Padding(
@@ -95,7 +112,7 @@ class PasswordList extends StatelessWidget {
 															padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 															child: Text(this.passwords[ids[index]]["title"], style: TextStyle(
 																fontWeight: FontWeight.bold,
-																color: textColorDark,
+																color: theme.getTheme()["textColorDark"],
 																fontSize: 18
 															)),
 														),
@@ -103,7 +120,7 @@ class PasswordList extends StatelessWidget {
 															padding: const EdgeInsets.all(10),
 															child: Text(this.passwords[ids[index]]["url"], style: TextStyle(
 																fontStyle:FontStyle.italic,
-																color: textColorBright
+																color: theme.getTheme()["textColorBright"]
 															)),
 														),
 													],
@@ -111,6 +128,7 @@ class PasswordList extends StatelessWidget {
 												Expanded(
 													child: IconButton(
 														icon: Icon(Icons.arrow_forward_ios),
+														color: theme.getTheme()["accentColor"],
 														iconSize: 24,
 														alignment: Alignment.centerRight,
 													)
@@ -134,9 +152,10 @@ class PasswordList extends StatelessWidget {
 												context,
 												MaterialPageRoute(builder: (context) => PasswordForm("add"))
 											);
+											theme.statusColorAccent();
 										},
 										child: Card(
-											color: accentColor,
+											color: theme.getTheme()["accentColor"],
 											child: Column(
 												children: <Widget>[
 													Padding(
@@ -145,7 +164,7 @@ class PasswordList extends StatelessWidget {
 															children: <Widget>[
 																Text("Add a password...", style: TextStyle(
 																	fontWeight: FontWeight.bold,
-																	color: backgroundColorLight,
+																	color: theme.getTheme()["backgroundColorLight"],
 																	fontSize: 18
 																)),
 															],

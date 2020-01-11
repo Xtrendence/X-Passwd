@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:x_passwd/main.dart';
+import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/views/password_list.dart';
 import 'package:x_passwd/utils.dart';
+
+AppTheme theme = new AppTheme();
 
 class PasswordForm extends StatelessWidget {
 	String action;
@@ -27,13 +31,46 @@ class PasswordForm extends StatelessWidget {
 		return Scaffold(
 			appBar: AppBar(
 				title: Text(capitalize(this.action) + " Password"),
-				backgroundColor: accentColor,
+				backgroundColor: theme.getTheme()["accentColor"],
 				elevation: 0.0,
 				actions: <Widget>[
 					if(this.action == "edit") IconButton(
 						icon: Icon(Icons.delete),
 						onPressed: () {
-						
+							return AlertDialog(
+								title: Text("Confirmation"),
+								content: Text("Are you sure you want to delete this password?"),
+								actions: [
+									FlatButton(
+										onPressed: () {
+											Navigator.of(context).pop();
+										},
+										child: Text("Cancel", style: TextStyle(
+											fontWeight: FontWeight.bold,
+											color: theme.getTheme()["accentColor"],
+											fontSize: 18
+										)),
+									),
+									FlatButton(
+										onPressed: () async {
+											Utils utils = new Utils();
+											
+											await utils.remove(passwordID);
+											
+											Navigator.push(
+												context,
+												MaterialPageRoute(builder: (context) => PasswordList())
+											);
+											theme.statusColorAccent();
+										},
+										child: Text("Delete", style: TextStyle(
+											fontWeight: FontWeight.bold,
+											color: theme.getTheme()["accentColorDark"],
+											fontSize: 18
+										)),
+									),
+								],
+							);
 						},
 					)
 				]
@@ -132,19 +169,21 @@ class PasswordForm extends StatelessWidget {
 										Utils utils = new Utils();
 										
 										if(inputTitle.text.toString().trim() != "" && inputPassword.text.toString().trim() != "") {
-											await utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+											utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
 											
 											Navigator.push(
 												context,
 												MaterialPageRoute(builder: (context) => PasswordList())
 											);
+											
+											theme.statusColorAccent();
 										}
 										else {
 											utils.notify(context, "Title and password need to be provided.");
 										}
 									},
 									child: Card(
-										color: accentColor,
+										color: theme.getTheme()["accentColor"],
 										child: Padding(
 											padding: const EdgeInsets.all(15),
 											child: Column(
@@ -161,9 +200,8 @@ class PasswordForm extends StatelessWidget {
 																			Text((this.action == "add") ? "Add Password" : "Update Password", style: TextStyle(
 																				fontSize: 24,
 																				fontWeight: FontWeight.bold,
-																				color: backgroundColorLight,
-																			)
-																			),
+																				color: theme.getTheme()["backgroundColorLight"],
+																			)),
 																		],
 																	),
 																)
