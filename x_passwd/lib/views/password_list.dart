@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +15,16 @@ var textColorDark = Color.fromRGBO(75, 75, 75, 1);
 var textColorBright = Color.fromRGBO(100, 100, 100, 1);
 
 class PasswordList extends StatelessWidget {
+	Map passwords;
+	List ids = new List(0);
+	
+	PasswordList();
+	
+	PasswordList.setPasswordList(String list) {
+		this.passwords = jsonDecode(list) as Map;
+		this.ids = this.passwords.keys.toList();
+	}
+	
 	@override
 	Widget build(BuildContext context) {
 		
@@ -42,7 +54,7 @@ class PasswordList extends StatelessWidget {
 				],
 			),
 			body: ListView.builder(
-				itemCount: 1,
+				itemCount: this.ids.length,
 				itemBuilder: (context, index) {
 					return Padding(
 						padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -64,7 +76,7 @@ class PasswordList extends StatelessWidget {
 												children: <Widget>[
 													Padding(
 														padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-														child: Text("Example Title", style: TextStyle(
+														child: Text(this.passwords[ids[index]]["title"], style: TextStyle(
 															fontWeight: FontWeight.bold,
 															color: textColorDark,
 															fontSize: 18
@@ -72,7 +84,7 @@ class PasswordList extends StatelessWidget {
 													),
 													Padding(
 														padding: const EdgeInsets.all(10),
-														child: Text("https://www.example.com", style: TextStyle(
+														child: Text(this.passwords[ids[index]]["url"], style: TextStyle(
 															fontStyle:FontStyle.italic,
 															color: textColorBright
 														)),

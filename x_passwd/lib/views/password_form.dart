@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:x_passwd/views/password_list.dart';
+import 'package:x_passwd/utils.dart';
 
 class PasswordForm extends StatelessWidget {
 	String action;
@@ -119,6 +120,10 @@ class PasswordForm extends StatelessWidget {
 								padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 								child: InkWell(
 									onTap: () {
+										Utils utils = new Utils();
+										
+										utils.save(inputTitle.value.toString(), inputURL.value.toString(), inputPassword.value.toString(), inputNotes.value.toString());
+										
 										Navigator.push(
 											context,
 											MaterialPageRoute(builder: (context) => PasswordList())
