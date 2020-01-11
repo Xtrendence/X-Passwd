@@ -55,6 +55,20 @@ class Utils {
 		return jsonEncode(stored);
 	}
 	
+	edit(String id, String title, String url, String password, String notes) async {
+		Map<String, dynamic> content = { "title":title, "url":url, "password":password, "notes":notes };
+		
+		String json = jsonEncode(content);
+		
+		String userPassword = await getPassword();
+		
+		String encrypted = await aesEncrypt(json, userPassword);
+		
+		FlutterSecureStorage storage = new FlutterSecureStorage();
+		
+		await storage.write(key:id, value:encrypted);
+	}
+	
 	remove(String passwordID) async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
 		await storage.delete(key: passwordID);

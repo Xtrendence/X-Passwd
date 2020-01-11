@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,21 +14,33 @@ class PasswordForm extends StatelessWidget {
 	String action;
 	String passwordID;
 	
+	String currentTitle = "";
+	String currentUrl = "";
+	String currentPassword = "";
+	String currentNotes = "";
+	
 	PasswordForm(String desiredAction) {
 		this.action = desiredAction;
 	}
 	
-	PasswordForm.edit(String desiredAction, String id) {
+	PasswordForm.edit(String desiredAction, String id, Map list) {
 		this.action = desiredAction;
 		this.passwordID = id;
+		
+		Map<String, dynamic> item = jsonDecode(list[id]);
+		
+		this.currentTitle = item["title"];
+		this.currentUrl = item["url"];
+		this.currentPassword = item["password"];
+		this.currentNotes = item["notes"];
 	}
 	
 	@override
 	Widget build(BuildContext context) {
-		final inputTitle = TextEditingController();
-		final inputURL = TextEditingController();
-		final inputPassword = TextEditingController();
-		final inputNotes = TextEditingController();
+		final inputTitle = TextEditingController(text: this.currentTitle);
+		final inputURL = TextEditingController(text: this.currentUrl);
+		final inputPassword = TextEditingController(text: this.currentPassword);
+		final inputNotes = TextEditingController(text: this.currentNotes);
 		
 		return Scaffold(
 			appBar: AppBar(
@@ -181,7 +195,12 @@ class PasswordForm extends StatelessWidget {
 										Utils utils = new Utils();
 										
 										if(inputTitle.text.toString().trim() != "" && inputPassword.text.toString().trim() != "") {
-											await utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+											if(this.action == "add") {
+												await utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+											}
+											else if(this.action == "edit") {
+												await utils.edit(this.passwordID, inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+											}
 											
 											String list = await utils.read();
 											

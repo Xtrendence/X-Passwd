@@ -101,7 +101,7 @@ class PasswordList extends StatelessWidget {
 								onTap: () {
 									Navigator.push(
 										context,
-										MaterialPageRoute(builder: (context) => PasswordForm.edit("edit", id))
+										MaterialPageRoute(builder: (context) => PasswordForm.edit("edit", id, this.passwords))
 									);
 									theme.statusColorAccent();
 								},
