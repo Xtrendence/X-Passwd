@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:encrypt/encrypt.dart';
+import 'package:flutter/material.dart' as Material;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:randombytes/randombytes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,24 +17,18 @@ class Utils {
 		String json = jsonEncode(object);
 		
 		String encrypted = await aesEncrypt(json, getPassword());
-	
-		SharedPreferences preferences = await SharedPreferences.getInstance();
 		
-		preferences.setString(id, encrypted);
+		FlutterSecureStorage storage = new FlutterSecureStorage();
+		
+		await storage.write(key:id, value:encrypted);
 	}
 	
 	read() async {
-		SharedPreferences preferences = await SharedPreferences.getInstance();
+		FlutterSecureStorage storage = new FlutterSecureStorage();
+
+		Object stored = await storage.readAll();
 		
-		Map<String, String> object = {};
-		
-		var keys = preferences.getKeys().toList();
-		
-		for(int i = 0; i < keys.length; i++) {
-			object[keys[i]] = preferences.getString(keys[i]);
-		}
-		
-		return jsonEncode(object);
+		return jsonEncode(stored);
 	}
 	
 	aesEncrypt(String plaintext, String password) async {
@@ -65,8 +60,23 @@ class Utils {
 		return await storage.read(key:"password");
 	}
 	
+	vaultExists() async {
+		FlutterSecureStorage storage = new FlutterSecureStorage();
+		Map<String, String> values = await storage.readAll();
+		if(values.keys.length > 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	generateID() {
 		String timestamp = new DateTime.now().millisecondsSinceEpoch.toString();
 		return timestamp + "-" + randomBytes(10).toString();
+	}
+	
+	notify(Material.BuildContext context, String text) {
+		Material.Scaffold.of(context).showSnackBar(Material.SnackBar(
+			content: Material.Text(text),
+		));
 	}
 }

@@ -3,16 +3,8 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:x_passwd/main.dart';
 import 'package:x_passwd/views/password_form.dart';
-
-var backgroundColorDark = Color.fromRGBO(230, 230, 230, 1);
-var backgroundColorMedium = Color.fromRGBO(245, 245, 245, 1);
-var backgroundColorLight = Color.fromRGBO(255, 255, 255, 1);
-
-var accentColor = Color.fromRGBO(0, 175, 255, 1);
-
-var textColorDark = Color.fromRGBO(75, 75, 75, 1);
-var textColorBright = Color.fromRGBO(100, 100, 100, 1);
 
 class PasswordList extends StatelessWidget {
 	Map passwords;
@@ -27,14 +19,6 @@ class PasswordList extends StatelessWidget {
 	
 	@override
 	Widget build(BuildContext context) {
-		
-		SystemChrome.setSystemUIOverlayStyle(
-			SystemUiOverlayStyle(
-				systemNavigationBarColor: backgroundColorMedium,
-				statusBarColor: accentColor,
-				systemNavigationBarIconBrightness: Brightness.dark,
-			),
-		);
 		
 		return Scaffold(
 			appBar: AppBar(
@@ -62,7 +46,7 @@ class PasswordList extends StatelessWidget {
 							onTap: () {
 								Navigator.push(
 									context,
-									MaterialPageRoute(builder: (context) => PasswordForm.edit("edit", index))
+									MaterialPageRoute(builder: (context) => PasswordForm.edit("edit", this.ids[index]))
 								);
 							},
 							child: Card(

@@ -1,17 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:x_passwd/main.dart';
 import 'package:x_passwd/views/password_list.dart';
 import 'package:x_passwd/utils.dart';
 
 class PasswordForm extends StatelessWidget {
 	String action;
-	int passwordID;
+	String passwordID;
 	
 	PasswordForm(String desiredAction) {
 		this.action = desiredAction;
 	}
 	
-	PasswordForm.edit(String desiredAction, int id) {
+	PasswordForm.edit(String desiredAction, String id) {
 		this.action = desiredAction;
 		this.passwordID = id;
 	}
@@ -122,7 +123,7 @@ class PasswordForm extends StatelessWidget {
 									onTap: () {
 										Utils utils = new Utils();
 										
-										utils.save(inputTitle.value.toString(), inputURL.value.toString(), inputPassword.value.toString(), inputNotes.value.toString());
+										utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
 										
 										Navigator.push(
 											context,
