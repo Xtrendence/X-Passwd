@@ -29,7 +29,7 @@ class Utils {
 	
 	read() async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
-
+		
 		Map<String, String> stored = await storage.readAll();
 		
 		stored.remove("password");
@@ -52,7 +52,24 @@ class Utils {
 			stored[id] = plaintext;
 		}
 		
-		return jsonEncode(stored);
+		try {
+			var sort = stored.entries.toList()
+				..sort((item1, item2
+					) {
+					var difference = item1.value.compareTo(item2.value);
+					if(difference == 0) {
+						difference = item1.key.compareTo(item2.key);
+					}
+					return difference;
+				});
+			
+			Map<String, dynamic> sorted = Map.fromEntries(sort);
+			
+			return jsonEncode(sorted);
+		}
+		catch(e) {
+			return jsonEncode(stored);
+		}
 	}
 	
 	edit(String id, String title, String url, String password, String notes) async {
@@ -102,7 +119,7 @@ class Utils {
 	
 	argon(String password) async {
 		Uint8List pass = utf8.encode(password);
-
+		
 		Uint8List salt = utf8.encode(base64.encode(randomBytes(16)));
 		
 		Enc.Argon2 argon2 = Enc.Argon2(iterations: 16, hashLength: 22, memory: 256, parallelism: 2);
@@ -123,7 +140,7 @@ class Utils {
 		
 		return hash;
 	}
-
+	
 	setPassword(String password) async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
 		await storage.deleteAll();
@@ -133,7 +150,12 @@ class Utils {
 	changePassword(String password) async {
 	
 	}
-
+	
+	deleteVault() async {
+		FlutterSecureStorage storage = new FlutterSecureStorage();
+		await storage.deleteAll();
+	}
+	
 	getPassword() async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
 		return await storage.read(key:"password");

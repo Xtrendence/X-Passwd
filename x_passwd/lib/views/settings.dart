@@ -242,7 +242,38 @@ class Settings extends StatelessWidget {
 																padding: const EdgeInsets.all(8.0),
 																child: InkWell(
 																	onTap: () async {
-																	
+																		showDialog(
+																			context: context,
+																			builder: (BuildContext context) {
+																				return AlertDialog(
+																					title: Text("Warning"),
+																					content: Text("This will delete all your saved passwords and their details. Are you sure you want to continue?"),
+																					actions: [
+																						FlatButton(
+																							onPressed: () {
+																								Navigator.of(context).pop();
+																							},
+																							child: Text("Cancel", style: TextStyle(
+																								fontWeight: FontWeight.bold,
+																								color: theme.getTheme()["accentColor"],
+																								fontSize: 18
+																							)),
+																						),
+																						FlatButton(
+																							onPressed: () async {
+																								await utils.deleteVault();
+																								SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+																							},
+																							child: Text("Delete", style: TextStyle(
+																								fontWeight: FontWeight.bold,
+																								color: theme.getTheme()["accentColorDark"],
+																								fontSize: 18
+																							)),
+																						),
+																					],
+																				);
+																			},
+																		);
 																	},
 																	child: Container(
 																		decoration: BoxDecoration(

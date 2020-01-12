@@ -11,8 +11,6 @@ class AppTheme {
 	}
 	
 	getTheme() {
-		print(this.colorScheme);
-		
 		Map<String, dynamic> light = {
 			"backgroundColorDark": Color.fromRGBO(230, 230, 230, 1),
 			"backgroundColorMedium": Color.fromRGBO(245, 245, 245, 1),
