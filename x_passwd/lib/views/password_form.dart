@@ -59,9 +59,19 @@ class PasswordFormState extends State<PasswordForm> {
 	@override
 	Widget build(BuildContext context) {
 		String action = widget.action;
+		String processedPassword = widget.currentPassword;
+		
 		var inputTitle = TextEditingController(text: widget.currentTitle);
 		var inputURL = TextEditingController(text: widget.currentUrl);
-		var inputPassword = TextEditingController(text: initialPassword);
+		
+		if(action == "edit") {
+			processedPassword = widget.currentPassword;
+		}
+		else {
+			processedPassword = initialPassword;
+		}
+		var inputPassword = TextEditingController(text: processedPassword);
+		
 		var inputNotes = TextEditingController(text: widget.currentNotes);
 		
 		return Scaffold(

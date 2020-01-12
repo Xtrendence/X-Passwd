@@ -37,7 +37,7 @@ class CreateForm extends StatelessWidget {
 			),
 			body: Builder(
 				builder: (context) =>
-					Stack(
+					ListView(
 						children: <Widget>[
 							Column(
 								mainAxisAlignment: MainAxisAlignment.center,

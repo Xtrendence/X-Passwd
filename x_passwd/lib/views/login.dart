@@ -28,7 +28,7 @@ class LoginForm extends StatelessWidget {
 				backgroundColor: theme.getTheme()["backgroundColorLight"],
 				body: Builder(
 					builder: (context) =>
-						Stack(
+						ListView(
 							children: <Widget>[
 								Column(
 									mainAxisAlignment: MainAxisAlignment.center,
