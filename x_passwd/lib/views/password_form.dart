@@ -43,6 +43,7 @@ class PasswordForm extends StatelessWidget {
 		final inputNotes = TextEditingController(text: this.currentNotes);
 		
 		return Scaffold(
+			backgroundColor: theme.getTheme()["backgroundColorLight"],
 			appBar: AppBar(
 				title: Text(capitalize(this.action) + " Password"),
 				backgroundColor: theme.getTheme()["accentColor"],
@@ -109,13 +110,20 @@ class PasswordForm extends StatelessWidget {
 							Padding(
 								padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 								child: Card(
+									color: theme.getTheme()["backgroundColorMedium"],
 									child: Column(
 										children: <Widget>[
 											Padding(
 												padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
 												child: TextFormField(
 													controller: inputTitle,
+													style: TextStyle(
+														color: theme.getTheme()["textColorDark"]
+													),
 													decoration: InputDecoration(
+														labelStyle: TextStyle(
+															color: theme.getTheme()["textColorDark"]
+														),
 														labelText: "Title...",
 														border: InputBorder.none
 													)
@@ -128,13 +136,20 @@ class PasswordForm extends StatelessWidget {
 							Padding(
 								padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 								child: Card(
+									color: theme.getTheme()["backgroundColorMedium"],
 									child: Column(
 										children: <Widget>[
 											Padding(
 												padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
 												child: TextFormField(
 													controller: inputURL,
+													style: TextStyle(
+														color: theme.getTheme()["textColorDark"]
+													),
 													decoration: InputDecoration(
+														labelStyle: TextStyle(
+															color: theme.getTheme()["textColorDark"]
+														),
 														labelText: "URL...",
 														border: InputBorder.none
 													)
@@ -147,6 +162,7 @@ class PasswordForm extends StatelessWidget {
 							Padding(
 								padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 								child: Card(
+									color: theme.getTheme()["backgroundColorMedium"],
 									child: Column(
 										children: <Widget>[
 											Padding(
@@ -154,9 +170,15 @@ class PasswordForm extends StatelessWidget {
 												child: TextFormField(
 													controller: inputPassword,
 													obscureText: true,
+													style: TextStyle(
+														color: theme.getTheme()["textColorDark"]
+													),
 													decoration: InputDecoration(
+														labelStyle: TextStyle(
+															color: theme.getTheme()["textColorDark"]
+														),
 														labelText: "Password...",
-														border: InputBorder.none,
+														border: InputBorder.none
 													)
 												),
 											)
@@ -167,6 +189,7 @@ class PasswordForm extends StatelessWidget {
 							Padding(
 								padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 								child: Card(
+									color: theme.getTheme()["backgroundColorMedium"],
 									child: Column(
 										children: <Widget>[
 											Padding(
@@ -177,10 +200,16 @@ class PasswordForm extends StatelessWidget {
 													maxLines: 6,
 													expands: false,
 													keyboardType: TextInputType.multiline,
+													style: TextStyle(
+														color: theme.getTheme()["textColorDark"]
+													),
 													decoration: InputDecoration(
-														labelText: "Notes...",
+														labelStyle: TextStyle(
+															color: theme.getTheme()["textColorDark"]
+														),
+														labelText: "Password...",
 														alignLabelWithHint: true,
-														border: InputBorder.none,
+														border: InputBorder.none
 													)
 												),
 											)
@@ -233,7 +262,7 @@ class PasswordForm extends StatelessWidget {
 																			Text((this.action == "add") ? "Add Password" : "Update Password", style: TextStyle(
 																				fontSize: 24,
 																				fontWeight: FontWeight.bold,
-																				color: theme.getTheme()["backgroundColorLight"],
+																				color: theme.getTheme()["accentContrast"],
 																			)),
 																		],
 																	),

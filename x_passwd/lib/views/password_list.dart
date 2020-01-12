@@ -31,6 +31,7 @@ class PasswordList extends StatelessWidget {
 		return WillPopScope(
 			onWillPop: () async => false,
 			child: Scaffold(
+				backgroundColor: theme.getTheme()["backgroundColorLight"],
 				appBar: AppBar(
 					backgroundColor: theme.getTheme()["accentColor"],
 					elevation: 0.0,
@@ -106,6 +107,7 @@ class PasswordList extends StatelessWidget {
 									theme.statusColorAccent();
 								},
 								child: Card(
+									color: theme.getTheme()["backgroundColorMedium"],
 									elevation: 1.5,
 									child: Padding(
 										padding: const EdgeInsets.all(8.0),
@@ -127,18 +129,26 @@ class PasswordList extends StatelessWidget {
 															padding: const EdgeInsets.all(10),
 															child: Text(url, style: TextStyle(
 																fontStyle:FontStyle.italic,
-																color: theme.getTheme()["textColorBright"]
+																color: theme.getTheme()["textColorLight"]
 															)),
 														),
 													],
 												),
 												Expanded(
-													child: IconButton(
-														icon: Icon(Icons.arrow_forward_ios),
-														color: theme.getTheme()["accentColor"],
-														iconSize: 24,
-														alignment: Alignment.centerRight,
-													)
+													child: Padding(
+														padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+														child: Column(
+															crossAxisAlignment: CrossAxisAlignment.end,
+															children: <Widget>[
+																IconTheme(
+																	data: IconThemeData(
+																		color: theme.getTheme()["textColorLight"]
+																	),
+																	child: Icon(Icons.arrow_forward_ios, size: 24),
+																),
+															],
+														),
+													),
 												)
 											],
 										),
@@ -171,7 +181,7 @@ class PasswordList extends StatelessWidget {
 															children: <Widget>[
 																Text("Add a password...", style: TextStyle(
 																	fontWeight: FontWeight.bold,
-																	color: theme.getTheme()["backgroundColorLight"],
+																	color: theme.getTheme()["accentContrast"],
 																	fontSize: 18
 																)),
 															],

@@ -47,7 +47,7 @@ class CreateForm extends StatelessWidget {
 											child: Align(
 												alignment: Alignment.bottomCenter,
 												child: Card(
-													color: theme.getTheme()["backgroundColorLight"],
+													color: theme.getTheme()["backgroundColorMedium"],
 													elevation: 0.8,
 													child: Column(
 														children: <Widget>[
@@ -68,6 +68,7 @@ class CreateForm extends StatelessWidget {
 									Padding(
 										padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
 										child: Card(
+											color: theme.getTheme()["backgroundColorMedium"],
 											elevation: 1.5,
 											child: Column(
 												children: <Widget>[
@@ -76,7 +77,13 @@ class CreateForm extends StatelessWidget {
 														child: TextFormField(
 															controller: inputPassword,
 															obscureText: true,
+															style: TextStyle(
+																color: theme.getTheme()["textColorDark"]
+															),
 															decoration: InputDecoration(
+																labelStyle: TextStyle(
+																	color: theme.getTheme()["textColorDark"]
+																),
 																labelText: "Password...",
 																border: InputBorder.none
 															)
@@ -89,6 +96,7 @@ class CreateForm extends StatelessWidget {
 									Padding(
 										padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
 										child: Card(
+											color: theme.getTheme()["backgroundColorMedium"],
 											elevation: 1.5,
 											child: Column(
 												children: <Widget>[
@@ -97,7 +105,13 @@ class CreateForm extends StatelessWidget {
 														child: TextFormField(
 															controller: inputPasswordRepeat,
 															obscureText: true,
+															style: TextStyle(
+																color: theme.getTheme()["textColorDark"]
+															),
 															decoration: InputDecoration(
+																labelStyle: TextStyle(
+																	color: theme.getTheme()["textColorDark"]
+																),
 																labelText: "Repeat Password...",
 																border: InputBorder.none
 															)
