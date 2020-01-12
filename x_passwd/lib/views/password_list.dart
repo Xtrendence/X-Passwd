@@ -4,6 +4,7 @@ import 'package:encrypt/encrypt.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:x_passwd/main.dart';
 import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/utils.dart';
@@ -12,22 +13,23 @@ import 'package:x_passwd/views/login.dart';
 import 'package:x_passwd/views/password_form.dart';
 import 'package:x_passwd/views/settings.dart';
 
-AppTheme theme = new AppTheme();
-
 class PasswordList extends StatelessWidget {
+	AppTheme theme;
 	Map passwords;
 	List ids;
 	
-	PasswordList();
+	PasswordList(AppTheme appTheme) {
+		this.theme = appTheme;
+	}
 	
-	PasswordList.setPasswordList(String list) {
+	PasswordList.setPasswordList(AppTheme appTheme, String list) {
+		this.theme = appTheme;
 		this.passwords = jsonDecode(list) as Map;
 		this.ids = this.passwords.keys.toList();
 	}
 	
 	@override
 	Widget build(BuildContext context) {
-		
 		return WillPopScope(
 			onWillPop: () async => false,
 			child: Scaffold(
@@ -47,13 +49,13 @@ class PasswordList extends StatelessWidget {
 							if(vaultExists) {
 								Navigator.push(
 									context,
-									MaterialPageRoute(builder: (context) => LoginForm())
+									MaterialPageRoute(builder: (context) => LoginForm(theme))
 								);
 							}
 							else {
 								Navigator.push(
 									context,
-									MaterialPageRoute(builder: (context) => CreateForm(vaultExists))
+									MaterialPageRoute(builder: (context) => CreateForm(theme, vaultExists))
 								);
 							}
 							theme.statusColorBackground();
@@ -65,7 +67,7 @@ class PasswordList extends StatelessWidget {
 							onPressed: () {
 								Navigator.push(
 									context,
-									MaterialPageRoute(builder: (context) => Settings())
+									MaterialPageRoute(builder: (context) => Settings(theme))
 								);
 								theme.statusColorAccent();
 							},
@@ -81,7 +83,7 @@ class PasswordList extends StatelessWidget {
 							onPressed: () {
 								Navigator.push(
 									context,
-									MaterialPageRoute(builder: (context) => PasswordForm.action("add"))
+									MaterialPageRoute(builder: (context) => PasswordForm.action(theme, "add"))
 								);
 								theme.statusColorAccent();
 							},
@@ -102,7 +104,7 @@ class PasswordList extends StatelessWidget {
 								onTap: () {
 									Navigator.push(
 										context,
-										MaterialPageRoute(builder: (context) => PasswordForm.edit("edit", id, this.passwords))
+										MaterialPageRoute(builder: (context) => PasswordForm.edit(theme, "edit", id, this.passwords))
 									);
 									theme.statusColorAccent();
 								},
@@ -167,7 +169,7 @@ class PasswordList extends StatelessWidget {
 										onTap: () {
 											Navigator.push(
 												context,
-												MaterialPageRoute(builder: (context) => PasswordForm.action("add"))
+												MaterialPageRoute(builder: (context) => PasswordForm.action(theme, "add"))
 											);
 											theme.statusColorAccent();
 										},

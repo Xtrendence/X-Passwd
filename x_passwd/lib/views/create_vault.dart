@@ -1,22 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:x_passwd/main.dart';
 import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/utils.dart';
 import 'package:x_passwd/views/login.dart';
 import 'package:x_passwd/views/password_list.dart';
 
-AppTheme theme = new AppTheme();
-
 class CreateForm extends StatelessWidget {
+	AppTheme theme;
 	bool vaultExists;
 	String password = null;
 	
-	CreateForm(bool vaultExistence) {
+	CreateForm(AppTheme appTheme, bool vaultExistence) {
+		this.theme = appTheme;
 		this.vaultExists = vaultExistence;
 	}
 	
-	CreateForm.autoFill(bool vaultExistence, String pass) {
+	CreateForm.autoFill(AppTheme appTheme, bool vaultExistence, String pass) {
+		this.theme = appTheme;
 		this.vaultExists = vaultExistence;
 		this.password = pass;
 	}
@@ -163,7 +165,7 @@ class CreateForm extends StatelessWidget {
 																						
 																						Navigator.push(
 																							context,
-																							MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(list))
+																							MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
 																						);
 																						
 																						theme.statusColorAccent();

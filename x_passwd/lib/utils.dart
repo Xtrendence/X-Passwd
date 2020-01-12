@@ -129,6 +129,10 @@ class Utils {
 		await storage.deleteAll();
 		await storage.write(key:"password", value:password);
 	}
+	
+	changePassword(String password) async {
+	
+	}
 
 	getPassword() async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();

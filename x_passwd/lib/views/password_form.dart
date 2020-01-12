@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:x_passwd/main.dart';
 import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/views/password_list.dart';
 import 'package:x_passwd/utils.dart';
 
-AppTheme theme = new AppTheme();
+AppTheme theme;
 Utils utils = new Utils();
 
 class PasswordForm extends StatefulWidget {
@@ -25,11 +26,13 @@ class PasswordForm extends StatefulWidget {
 	
 	PasswordForm();
 	
-	PasswordForm.action(String desiredAction) {
+	PasswordForm.action(AppTheme appTheme, String desiredAction) {
+		theme = appTheme;
 		this.action = desiredAction;
 	}
 	
-	PasswordForm.edit(String desiredAction, String id, Map list) {
+	PasswordForm.edit(AppTheme appTheme, String desiredAction, String id, Map list) {
+		theme = appTheme;
 		this.action = desiredAction;
 		this.passwordID = id;
 		
@@ -44,10 +47,12 @@ class PasswordForm extends StatefulWidget {
 
 class PasswordFormState extends State<PasswordForm> {
 	bool obscurePassword = true;
+	String initialPassword = "";
 	
-	void toggleObscurity(TextEditingController controller) {
+	void toggleObscurity(TextEditingController controller, String currentValue) {
 		setState(() {
 			obscurePassword = !obscurePassword;
+			initialPassword = currentValue;
 		});
 	}
 	
@@ -56,7 +61,7 @@ class PasswordFormState extends State<PasswordForm> {
 		String action = widget.action;
 		var inputTitle = TextEditingController(text: widget.currentTitle);
 		var inputURL = TextEditingController(text: widget.currentUrl);
-		var inputPassword = TextEditingController(text: widget.currentPassword);
+		var inputPassword = TextEditingController(text: initialPassword);
 		var inputNotes = TextEditingController(text: widget.currentNotes);
 		
 		return Scaffold(
@@ -102,7 +107,7 @@ class PasswordFormState extends State<PasswordForm> {
 												
 												Navigator.push(
 													context,
-													MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(list))
+													MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
 												);
 												theme.statusColorAccent();
 											},
@@ -121,7 +126,7 @@ class PasswordFormState extends State<PasswordForm> {
 			),
 			body: ListView.builder(
 				itemCount: 1,
-				itemBuilder: (context, index) {
+				itemBuilder: (builderContext, index) {
 					return Column(
 						children: <Widget>[
 							Padding(
@@ -152,8 +157,9 @@ class PasswordFormState extends State<PasswordForm> {
 																onPressed: () async {
 																	if(inputTitle.text.toString().trim() != "") {
 																		Clipboard.setData(new ClipboardData(text: inputTitle.text.toString()));
-																		utils.notify(context, "Copied to clipboard.");
+																		utils.notify(builderContext, "Copied to clipboard.");
 																	}
+																	FocusScope.of(builderContext).requestFocus(new FocusNode());
 																},
 															),
 														)
@@ -192,8 +198,9 @@ class PasswordFormState extends State<PasswordForm> {
 																onPressed: () async {
 																	if(inputURL.text.toString().trim() != "") {
 																		Clipboard.setData(new ClipboardData(text: inputURL.text.toString()));
-																		utils.notify(context, "Copied to clipboard.");
+																		utils.notify(builderContext, "Copied to clipboard.");
 																	}
+																	FocusScope.of(builderContext).requestFocus(new FocusNode());
 																},
 															),
 														)
@@ -231,7 +238,8 @@ class PasswordFormState extends State<PasswordForm> {
 															child: IconButton(
 																icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off, size: 32),
 																onPressed: () async {
-																	toggleObscurity(inputPassword);
+																	toggleObscurity(inputPassword, inputPassword.text.toString().trim());
+																	FocusScope.of(builderContext).requestFocus(new FocusNode());
 																},
 															),
 														)
@@ -275,8 +283,9 @@ class PasswordFormState extends State<PasswordForm> {
 																onPressed: () async {
 																	if(inputNotes.text.toString().trim() != "") {
 																		Clipboard.setData(new ClipboardData(text: inputNotes.text.toString()));
-																		utils.notify(context, "Copied to clipboard.");
+																		utils.notify(builderContext, "Copied to clipboard.");
 																	}
+																	FocusScope.of(builderContext).requestFocus(new FocusNode());
 																},
 															),
 														)
@@ -302,14 +311,14 @@ class PasswordFormState extends State<PasswordForm> {
 											String list = await utils.read();
 											
 											Navigator.push(
-												context,
-												MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(list))
+												builderContext,
+												MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
 											);
 											
 											theme.statusColorAccent();
 										}
 										else {
-											utils.notify(context, "Title and password need to be provided.");
+											utils.notify(builderContext, "Title and password need to be provided.");
 										}
 									},
 									child: Card(

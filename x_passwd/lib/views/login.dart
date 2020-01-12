@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:x_passwd/main.dart';
 import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/views/create_vault.dart';
@@ -9,10 +10,15 @@ import 'package:x_passwd/views/password_list.dart';
 
 import '../utils.dart';
 
-AppTheme theme = new AppTheme();
+
 
 class LoginForm extends StatelessWidget {
+	AppTheme theme;
 	final inputPassword = TextEditingController(text: "");
+	
+	LoginForm(appTheme) {
+		this.theme = appTheme;
+	}
 	
 	@override
 	Widget build(BuildContext context) {
@@ -124,7 +130,7 @@ class LoginForm extends StatelessWidget {
 															if(inputPassword.text.toString().trim() != "") {
 																Navigator.push(
 																	context,
-																	MaterialPageRoute(builder: (context) => CreateForm.autoFill(vaultExists, inputPassword.text.toString()))
+																	MaterialPageRoute(builder: (context) => CreateForm.autoFill(theme, vaultExists, inputPassword.text.toString()))
 																);
 																
 																inputPassword.clear();
@@ -133,7 +139,7 @@ class LoginForm extends StatelessWidget {
 																
 																Navigator.push(
 																	context,
-																	MaterialPageRoute(builder: (context) => CreateForm(vaultExists))
+																	MaterialPageRoute(builder: (context) => CreateForm(theme, vaultExists))
 																);
 															}
 															
@@ -223,7 +229,7 @@ class LoginForm extends StatelessWidget {
 			
 			Navigator.push(
 				context,
-				MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(list))
+				MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
 			);
 			
 			theme.statusColorAccent();
