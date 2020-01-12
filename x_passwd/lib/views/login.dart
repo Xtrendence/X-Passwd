@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:x_passwd/main.dart';
 import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/views/create_vault.dart';
@@ -26,7 +27,7 @@ class LoginForm extends StatelessWidget {
 								crossAxisAlignment: CrossAxisAlignment.center,
 								children: <Widget>[
 									Padding(
-										padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+										padding: const EdgeInsets.fromLTRB(10, 80, 10, 0),
 										child: Container(
 											child: Align(
 												alignment: Alignment.bottomCenter,
@@ -36,7 +37,7 @@ class LoginForm extends StatelessWidget {
 													child: Column(
 														children: <Widget>[
 															Padding(
-																padding: const EdgeInsets.all(10),
+																padding: const EdgeInsets.all(15),
 																child: Text("X:/Passwd", style: TextStyle(
 																	fontSize: 20,
 																	fontWeight: FontWeight.bold,
@@ -115,7 +116,7 @@ class LoginForm extends StatelessWidget {
 																context,
 																MaterialPageRoute(builder: (context) => CreateForm.autoFill(vaultExists, inputPassword.text.toString()))
 															);
-
+															
 															inputPassword.clear();
 														}
 														else {
@@ -148,6 +149,49 @@ class LoginForm extends StatelessWidget {
 											),
 										),
 									),
+									Padding(
+										padding: const EdgeInsets.all(8.0),
+										child: Container(
+											decoration: BoxDecoration(
+												borderRadius: BorderRadius.all(Radius.circular(72)),
+												color: theme.getTheme()["backgroundColorMedium"],
+											),
+											child: InkWell(
+												onTap: () async {
+													Utils utils = new Utils();
+													
+													var auth = LocalAuthentication();
+													
+													bool bioAvailable = await auth.canCheckBiometrics;
+													
+													if(bioAvailable) {
+														List<BiometricType> bios = await auth.getAvailableBiometrics();
+														
+														try {
+															bool valid = await auth.authenticateWithBiometrics(localizedReason: "Login using biometrics.", stickyAuth: true, useErrorDialogs: true);
+															
+															if(valid) {
+																inputPassword.text = await utils.getPassword();
+																login(context);
+															}
+														}
+														on PlatformException catch (e) {
+															utils.notify(context, e.message.toString());
+														}
+													}
+												},
+												child: Padding(
+													padding: const EdgeInsets.all(4),
+													child: IconTheme(
+														data: IconThemeData(
+															color: theme.getTheme()["accentColorLight"]
+														),
+														child: Icon(Icons.fingerprint, size: 72),
+													),
+												),
+											),
+										),
+									),
 								],
 							)
 						],
@@ -162,8 +206,6 @@ class LoginForm extends StatelessWidget {
 		String currentPassword = await utils.getPassword();
 		
 		String list = await utils.read();
-		
-		print(list);
 		
 		if(password == currentPassword) {
 			inputPassword.clear();

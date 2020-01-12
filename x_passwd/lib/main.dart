@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:x_passwd/locator.dart';
 import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/utils.dart';
 import 'package:x_passwd/views/create_vault.dart';
@@ -9,6 +13,8 @@ AppTheme theme = new AppTheme();
 
 void main() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    setupLocator();
     
     Utils utils = new Utils();
     
