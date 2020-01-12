@@ -106,6 +106,7 @@ class PasswordList extends StatelessWidget {
 									theme.statusColorAccent();
 								},
 								child: Card(
+									elevation: 1.5,
 									child: Padding(
 										padding: const EdgeInsets.all(8.0),
 										child: Row(

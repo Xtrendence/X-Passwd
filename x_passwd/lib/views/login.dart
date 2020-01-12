@@ -16,83 +16,34 @@ class LoginForm extends StatelessWidget {
 	
 	@override
 	Widget build(BuildContext context) {
-		return new Scaffold(
-			backgroundColor: theme.getTheme()["backgroundColorLight"],
-			body: Builder(
-				builder: (context) =>
-					Stack(
-						children: <Widget>[
-							Column(
-								mainAxisAlignment: MainAxisAlignment.center,
-								crossAxisAlignment: CrossAxisAlignment.center,
-								children: <Widget>[
-									Padding(
-										padding: const EdgeInsets.fromLTRB(10, 80, 10, 0),
-										child: Container(
-											child: Align(
-												alignment: Alignment.bottomCenter,
-												child: Card(
-													color: theme.getTheme()["backgroundColorLight"],
-													elevation: 0.2,
-													child: Column(
-														children: <Widget>[
-															Padding(
-																padding: const EdgeInsets.all(15),
-																child: Text("X:/Passwd", style: TextStyle(
-																	fontSize: 20,
-																	fontWeight: FontWeight.bold,
-																	color: theme.getTheme()["accentColor"]
-																)),
-															)
-														],
-													),
-												),
-											),
-										),
-									),
-									Padding(
-										padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
-										child: Card(
-											child: Column(
-												children: <Widget>[
-													Padding(
-														padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-														child: TextFormField(
-															controller: inputPassword,
-															obscureText: true,
-															onFieldSubmitted: (value) async {
-																await login(context);
-															},
-															decoration: InputDecoration(
-																labelText: "Password...",
-																border: InputBorder.none
-															)
-														),
-													)
-												],
-											),
-										),
-									),
-									Padding(
-										padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-										child: Container(
-											child: Align(
-												alignment: Alignment.bottomCenter,
-												child: InkWell(
-													onTap: () async {
-														await login(context);
-													},
+		return WillPopScope(
+			onWillPop: () async => false,
+			child: new Scaffold(
+				backgroundColor: theme.getTheme()["backgroundColorLight"],
+				body: Builder(
+					builder: (context) =>
+						Stack(
+							children: <Widget>[
+								Column(
+									mainAxisAlignment: MainAxisAlignment.center,
+									crossAxisAlignment: CrossAxisAlignment.center,
+									children: <Widget>[
+										Padding(
+											padding: const EdgeInsets.fromLTRB(10, 80, 10, 0),
+											child: Container(
+												child: Align(
+													alignment: Alignment.bottomCenter,
 													child: Card(
-														color: theme.getTheme()["accentColor"],
-														elevation: 0.2,
+														color: theme.getTheme()["backgroundColorLight"],
+														elevation: 0.8,
 														child: Column(
 															children: <Widget>[
 																Padding(
 																	padding: const EdgeInsets.all(15),
-																	child: Text("Access Vault", style: TextStyle(
-																		fontSize: 24,
+																	child: Text("X:/Passwd", style: TextStyle(
+																		fontSize: 20,
 																		fontWeight: FontWeight.bold,
-																		color: theme.getTheme()["backgroundColorLight"]
+																		color: theme.getTheme()["accentColor"]
 																	)),
 																)
 															],
@@ -101,102 +52,155 @@ class LoginForm extends StatelessWidget {
 												),
 											),
 										),
-									),
-									Padding(
-										padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-										child: Container(
-											child: Align(
-												alignment: Alignment.bottomCenter,
+										Padding(
+											padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
+											child: Card(
+												elevation: 1.5,
+												child: Column(
+													children: <Widget>[
+														Padding(
+															padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+															child: TextFormField(
+																controller: inputPassword,
+																obscureText: true,
+																onFieldSubmitted: (value) async {
+																	await login(context);
+																},
+																decoration: InputDecoration(
+																	labelText: "Password...",
+																	border: InputBorder.none
+																)
+															),
+														)
+													],
+												),
+											),
+										),
+										Padding(
+											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+											child: Container(
+												child: Align(
+													alignment: Alignment.bottomCenter,
+													child: InkWell(
+														onTap: () async {
+															await login(context);
+														},
+														child: Card(
+															color: theme.getTheme()["accentColor"],
+															elevation: 0.2,
+															child: Column(
+																children: <Widget>[
+																	Padding(
+																		padding: const EdgeInsets.all(15),
+																		child: Text("Access Vault", style: TextStyle(
+																			fontSize: 24,
+																			fontWeight: FontWeight.bold,
+																			color: theme.getTheme()["backgroundColorLight"]
+																		)),
+																	)
+																],
+															),
+														),
+													),
+												),
+											),
+										),
+										Padding(
+											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+											child: Container(
+												child: Align(
+													alignment: Alignment.bottomCenter,
+													child: InkWell(
+														onTap: () async {
+															Utils utils = new Utils();
+															bool vaultExists = await utils.vaultExists();
+															if(inputPassword.text.toString().trim() != "") {
+																Navigator.push(
+																	context,
+																	MaterialPageRoute(builder: (context) => CreateForm.autoFill(vaultExists, inputPassword.text.toString()))
+																);
+																
+																inputPassword.clear();
+															}
+															else {
+																
+																Navigator.push(
+																	context,
+																	MaterialPageRoute(builder: (context) => CreateForm(vaultExists))
+																);
+															}
+															
+															theme.statusColorAccent();
+														},
+														child: Card(
+															color: theme.getTheme()["accentColorLight"],
+															elevation: 0.2,
+															child: Column(
+																children: <Widget>[
+																	Padding(
+																		padding: const EdgeInsets.all(15),
+																		child: Text("Create Vault", style: TextStyle(
+																			fontSize: 24,
+																			fontWeight: FontWeight.bold,
+																			color: theme.getTheme()["backgroundColorLight"]
+																		)),
+																	)
+																],
+															),
+														),
+													),
+												),
+											),
+										),
+										Padding(
+											padding: const EdgeInsets.all(8.0),
+											child: Container(
+												decoration: BoxDecoration(
+													borderRadius: BorderRadius.all(Radius.circular(72)),
+													color: theme.getTheme()["backgroundColorMedium"],
+												),
 												child: InkWell(
 													onTap: () async {
 														Utils utils = new Utils();
-														bool vaultExists = await utils.vaultExists();
-														if(inputPassword.text.toString().trim() != "") {
-															Navigator.push(
-																context,
-																MaterialPageRoute(builder: (context) => CreateForm.autoFill(vaultExists, inputPassword.text.toString()))
-															);
-															
-															inputPassword.clear();
-														}
-														else {
-															
-															Navigator.push(
-																context,
-																MaterialPageRoute(builder: (context) => CreateForm(vaultExists))
-															);
-														}
 														
-														theme.statusColorAccent();
-													},
-													child: Card(
-														color: theme.getTheme()["accentColorLight"],
-														elevation: 0.2,
-														child: Column(
-															children: <Widget>[
-																Padding(
-																	padding: const EdgeInsets.all(15),
-																	child: Text("Create Vault", style: TextStyle(
-																		fontSize: 24,
-																		fontWeight: FontWeight.bold,
-																		color: theme.getTheme()["backgroundColorLight"]
-																	)),
-																)
-															],
-														),
-													),
-												),
-											),
-										),
-									),
-									Padding(
-										padding: const EdgeInsets.all(8.0),
-										child: Container(
-											decoration: BoxDecoration(
-												borderRadius: BorderRadius.all(Radius.circular(72)),
-												color: theme.getTheme()["backgroundColorMedium"],
-											),
-											child: InkWell(
-												onTap: () async {
-													Utils utils = new Utils();
-													
-													var auth = LocalAuthentication();
-													
-													bool bioAvailable = await auth.canCheckBiometrics;
-													
-													if(bioAvailable) {
-														List<BiometricType> bios = await auth.getAvailableBiometrics();
+														var auth = LocalAuthentication();
 														
-														try {
-															bool valid = await auth.authenticateWithBiometrics(localizedReason: "Login using biometrics.", stickyAuth: true, useErrorDialogs: true);
+														bool bioAvailable = await auth.canCheckBiometrics;
+														
+														if(bioAvailable) {
+															List<BiometricType> bios = await auth.getAvailableBiometrics();
 															
-															if(valid) {
-																inputPassword.text = await utils.getPassword();
-																login(context);
+															try {
+																bool valid = await auth.authenticateWithBiometrics(localizedReason: "Login using biometrics.", stickyAuth: true, useErrorDialogs: true);
+																
+																if(valid) {
+																	inputPassword.text = await utils.getPassword();
+																	login(context);
+																}
+															}
+															on PlatformException catch (e) {
+																utils.notify(context, e.message.toString());
 															}
 														}
-														on PlatformException catch (e) {
-															utils.notify(context, e.message.toString());
-														}
-													}
-												},
-												child: Padding(
-													padding: const EdgeInsets.all(4),
-													child: IconTheme(
-														data: IconThemeData(
-															color: theme.getTheme()["accentColorLight"]
+													},
+													child: Padding(
+														padding: const EdgeInsets.all(4),
+														child: IconTheme(
+															data: IconThemeData(
+																color: theme.getTheme()["accentColorLight"]
+															),
+															child: Icon(Icons.fingerprint, size: 72),
 														),
-														child: Icon(Icons.fingerprint, size: 72),
 													),
 												),
 											),
 										),
-									),
-								],
-							)
-						],
-					),
-			)
+									],
+								)
+							],
+						),
+				)
+			),
 		);
 	}
 	login(BuildContext context) async {

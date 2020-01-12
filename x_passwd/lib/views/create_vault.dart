@@ -48,7 +48,7 @@ class CreateForm extends StatelessWidget {
 												alignment: Alignment.bottomCenter,
 												child: Card(
 													color: theme.getTheme()["backgroundColorLight"],
-													elevation: 0.2,
+													elevation: 0.8,
 													child: Column(
 														children: <Widget>[
 															Padding(
@@ -68,6 +68,7 @@ class CreateForm extends StatelessWidget {
 									Padding(
 										padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
 										child: Card(
+											elevation: 1.5,
 											child: Column(
 												children: <Widget>[
 													Padding(
@@ -88,6 +89,7 @@ class CreateForm extends StatelessWidget {
 									Padding(
 										padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
 										child: Card(
+											elevation: 1.5,
 											child: Column(
 												children: <Widget>[
 													Padding(
