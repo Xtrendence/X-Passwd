@@ -9,8 +9,12 @@ import 'package:x_passwd/views/password_list.dart';
 import 'package:x_passwd/utils.dart';
 
 AppTheme theme = new AppTheme();
+Utils utils = new Utils();
 
-class PasswordForm extends StatelessWidget {
+class PasswordForm extends StatefulWidget {
+	@override
+	PasswordFormState createState() => PasswordFormState();
+	
 	String action;
 	String passwordID;
 	
@@ -19,7 +23,9 @@ class PasswordForm extends StatelessWidget {
 	String currentPassword = "";
 	String currentNotes = "";
 	
-	PasswordForm(String desiredAction) {
+	PasswordForm();
+	
+	PasswordForm.action(String desiredAction) {
 		this.action = desiredAction;
 	}
 	
@@ -34,18 +40,29 @@ class PasswordForm extends StatelessWidget {
 		this.currentPassword = item["password"];
 		this.currentNotes = item["notes"];
 	}
+}
+
+class PasswordFormState extends State<PasswordForm> {
+	bool obscurePassword = true;
+	
+	void toggleObscurity(TextEditingController controller) {
+		setState(() {
+			obscurePassword = !obscurePassword;
+		});
+	}
 	
 	@override
 	Widget build(BuildContext context) {
-		final inputTitle = TextEditingController(text: this.currentTitle);
-		final inputURL = TextEditingController(text: this.currentUrl);
-		final inputPassword = TextEditingController(text: this.currentPassword);
-		final inputNotes = TextEditingController(text: this.currentNotes);
+		String action = widget.action;
+		var inputTitle = TextEditingController(text: widget.currentTitle);
+		var inputURL = TextEditingController(text: widget.currentUrl);
+		var inputPassword = TextEditingController(text: widget.currentPassword);
+		var inputNotes = TextEditingController(text: widget.currentNotes);
 		
 		return Scaffold(
 			backgroundColor: theme.getTheme()["backgroundColorLight"],
 			appBar: AppBar(
-				title: Text(capitalize(this.action) + " Password"),
+				title: Text(capitalize(action) + " Password"),
 				backgroundColor: theme.getTheme()["accentColor"],
 				elevation: 0.0,
 				leading: IconButton(
@@ -56,7 +73,7 @@ class PasswordForm extends StatelessWidget {
 					}
 				),
 				actions: <Widget>[
-					if(this.action == "edit") IconButton(
+					if(action == "edit") IconButton(
 						icon: Icon(Icons.delete),
 						onPressed: () async {
 							showDialog(
@@ -79,7 +96,7 @@ class PasswordForm extends StatelessWidget {
 											onPressed: () async {
 												Utils utils = new Utils();
 												
-												await utils.remove(passwordID);
+												await utils.remove(widget.passwordID);
 												
 												String list = await utils.read();
 												
@@ -125,10 +142,24 @@ class PasswordForm extends StatelessWidget {
 															color: theme.getTheme()["textColorDark"]
 														),
 														labelText: "Title...",
-														border: InputBorder.none
+														border: InputBorder.none,
+														suffixIcon: IconTheme(
+															data: IconThemeData(
+																color: theme.getTheme()["textColorLight"]
+															),
+															child: IconButton(
+																icon: Icon(Icons.content_paste, size: 32),
+																onPressed: () async {
+																	if(inputTitle.text.toString().trim() != "") {
+																		Clipboard.setData(new ClipboardData(text: inputTitle.text.toString()));
+																		utils.notify(context, "Copied to clipboard.");
+																	}
+																},
+															),
+														)
 													)
 												),
-											)
+											),
 										],
 									),
 								),
@@ -151,7 +182,21 @@ class PasswordForm extends StatelessWidget {
 															color: theme.getTheme()["textColorDark"]
 														),
 														labelText: "URL...",
-														border: InputBorder.none
+														border: InputBorder.none,
+														suffixIcon: IconTheme(
+															data: IconThemeData(
+																color: theme.getTheme()["textColorLight"]
+															),
+															child: IconButton(
+																icon: Icon(Icons.content_paste, size: 32),
+																onPressed: () async {
+																	if(inputURL.text.toString().trim() != "") {
+																		Clipboard.setData(new ClipboardData(text: inputURL.text.toString()));
+																		utils.notify(context, "Copied to clipboard.");
+																	}
+																},
+															),
+														)
 													)
 												),
 											)
@@ -169,7 +214,7 @@ class PasswordForm extends StatelessWidget {
 												padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
 												child: TextFormField(
 													controller: inputPassword,
-													obscureText: true,
+													obscureText: obscurePassword,
 													style: TextStyle(
 														color: theme.getTheme()["textColorDark"]
 													),
@@ -178,7 +223,18 @@ class PasswordForm extends StatelessWidget {
 															color: theme.getTheme()["textColorDark"]
 														),
 														labelText: "Password...",
-														border: InputBorder.none
+														border: InputBorder.none,
+														suffixIcon: IconTheme(
+															data: IconThemeData(
+																color: theme.getTheme()["textColorLight"]
+															),
+															child: IconButton(
+																icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off, size: 32),
+																onPressed: () async {
+																	toggleObscurity(inputPassword);
+																},
+															),
+														)
 													)
 												),
 											)
@@ -207,9 +263,23 @@ class PasswordForm extends StatelessWidget {
 														labelStyle: TextStyle(
 															color: theme.getTheme()["textColorDark"]
 														),
-														labelText: "Password...",
+														labelText: "Notes...",
 														alignLabelWithHint: true,
-														border: InputBorder.none
+														border: InputBorder.none,
+														suffixIcon: IconTheme(
+															data: IconThemeData(
+																color: theme.getTheme()["textColorLight"]
+															),
+															child: IconButton(
+																icon: Icon(Icons.content_paste, size: 32),
+																onPressed: () async {
+																	if(inputNotes.text.toString().trim() != "") {
+																		Clipboard.setData(new ClipboardData(text: inputNotes.text.toString()));
+																		utils.notify(context, "Copied to clipboard.");
+																	}
+																},
+															),
+														)
 													)
 												),
 											)
@@ -221,14 +291,12 @@ class PasswordForm extends StatelessWidget {
 								padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 								child: InkWell(
 									onTap: () async {
-										Utils utils = new Utils();
-										
 										if(inputTitle.text.toString().trim() != "" && inputPassword.text.toString().trim() != "") {
-											if(this.action == "add") {
+											if(action == "add") {
 												await utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
 											}
-											else if(this.action == "edit") {
-												await utils.edit(this.passwordID, inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+											else if(action == "edit") {
+												await utils.edit(widget.passwordID, inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
 											}
 											
 											String list = await utils.read();
@@ -259,7 +327,7 @@ class PasswordForm extends StatelessWidget {
 																		crossAxisAlignment: CrossAxisAlignment.center,
 																		mainAxisAlignment: MainAxisAlignment.center,
 																		children: <Widget>[
-																			Text((this.action == "add") ? "Add Password" : "Update Password", style: TextStyle(
+																			Text((action == "add") ? "Add Password" : "Update Password", style: TextStyle(
 																				fontSize: 24,
 																				fontWeight: FontWeight.bold,
 																				color: theme.getTheme()["accentContrast"],

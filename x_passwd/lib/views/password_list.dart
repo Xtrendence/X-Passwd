@@ -81,7 +81,7 @@ class PasswordList extends StatelessWidget {
 							onPressed: () {
 								Navigator.push(
 									context,
-									MaterialPageRoute(builder: (context) => PasswordForm("add"))
+									MaterialPageRoute(builder: (context) => PasswordForm.action("add"))
 								);
 								theme.statusColorAccent();
 							},
@@ -167,7 +167,7 @@ class PasswordList extends StatelessWidget {
 										onTap: () {
 											Navigator.push(
 												context,
-												MaterialPageRoute(builder: (context) => PasswordForm("add"))
+												MaterialPageRoute(builder: (context) => PasswordForm.action("add"))
 											);
 											theme.statusColorAccent();
 										},
