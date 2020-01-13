@@ -50,6 +50,7 @@ class Delay {
 
 class PasswordListState extends State<PasswordList> {
 	final delay = Delay(delay: 420);
+	
 	Map<String, dynamic> passwordItems;
 	List passwordIDs;
 	
@@ -125,7 +126,7 @@ class PasswordListState extends State<PasswordList> {
 				),
 				body: Column(
 					children: <Widget>[
-						Padding(
+						if(passwordIDs.length > 0) Padding(
 							padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 							child: Card(
 								color: theme.getTheme()["backgroundColorMedium"],
@@ -171,8 +172,8 @@ class PasswordListState extends State<PasswordList> {
 															onPressed: () async {
 																inputSearch.clear();
 																setState(() {
-																  	filteredPasswordItems = passwordItems;
-																  	filteredPasswordIDs = passwordIDs;
+																	filteredPasswordItems = passwordItems;
+																	filteredPasswordIDs = passwordIDs;
 																});
 																FocusScope.of(builderContext).requestFocus(new FocusNode());
 															},
@@ -256,45 +257,47 @@ class PasswordListState extends State<PasswordList> {
 									);
 								}
 							),
-						) : Stack(
-							children: <Widget>[
-								Column(
-									children: <Widget>[
-										Padding(
-											padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-											child: InkWell(
-												onTap: () {
-													Navigator.push(
-														context,
-														MaterialPageRoute(builder: (context) => PasswordForm.action(theme, "add"))
-													);
-													theme.statusColorAccent();
-												},
-												child: Card(
-													color: theme.getTheme()["accentColor"],
-													child: Column(
-														children: <Widget>[
-															Padding(
-																padding: const EdgeInsets.all(20),
-																child: Row(
-																	children: <Widget>[
-																		Text("Add a password...", style: TextStyle(
-																			fontWeight: FontWeight.bold,
-																			color: theme.getTheme()["accentContrast"],
-																			fontSize: 18
-																		)),
-																	],
-																),
-															)
-														],
+						) : Expanded(
+							child: Stack(
+								children: <Widget>[
+									if(passwordIDs.length <= 0) Column(
+										children: <Widget>[
+											Padding(
+												padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+												child: InkWell(
+													onTap: () {
+														Navigator.push(
+															context,
+															MaterialPageRoute(builder: (context) => PasswordForm.action(theme, "add"))
+														);
+														theme.statusColorAccent();
+													},
+													child: Card(
+														color: theme.getTheme()["accentColor"],
+														child: Column(
+															children: <Widget>[
+																Padding(
+																	padding: const EdgeInsets.all(20),
+																	child: Row(
+																		children: <Widget>[
+																			Text("Add a password...", style: TextStyle(
+																				fontWeight: FontWeight.bold,
+																				color: theme.getTheme()["accentContrast"],
+																				fontSize: 18
+																			)),
+																		],
+																	),
+																)
+															],
+														),
 													),
 												),
 											),
-										),
-									],
-								),
-							],
-						),
+										],
+									),
+								],
+							),
+						)
 					]
 				),
 			),
