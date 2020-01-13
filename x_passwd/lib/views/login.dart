@@ -192,7 +192,7 @@ class LoginForm extends StatelessWidget {
 																}
 															}
 															on PlatformException catch (e) {
-																utils.notify(context, e.message.toString());
+																utils.notify(context, e.message.toString(), 4000);
 															}
 														}
 													},
@@ -235,7 +235,7 @@ class LoginForm extends StatelessWidget {
 			theme.statusColorAccent();
 		}
 		else {
-			utils.notify(context, "Wrong password.");
+			utils.notify(context, "Wrong password.", 4000);
 		}
 	}
 }

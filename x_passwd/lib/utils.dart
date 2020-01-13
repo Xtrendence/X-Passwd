@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:encrypt/encrypt.dart';
 import 'package:encryptions/encryptions.dart' as Enc;
 import 'package:flutter/material.dart' as Material;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:randombytes/randombytes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -152,7 +154,19 @@ class Utils {
 	}
 	
 	exportVault() async {
-	
+		FlutterSecureStorage storage = new FlutterSecureStorage();
+		
+		Map<String, String> stored = await storage.readAll();
+		
+		stored.remove("password");
+		
+		String filePath = (await getExternalStorageDirectory()).path + new DateTime.now().millisecondsSinceEpoch.toString() + ".passwd";
+		
+		File file = File(filePath);
+		
+		await file.writeAsString(jsonEncode(stored));
+		
+		return filePath;
 	}
 	
 	importVault(String exportedVault) {
@@ -184,9 +198,9 @@ class Utils {
 		return timestamp + "-" + bytes;
 	}
 	
-	notify(Material.BuildContext context, String text) {
+	notify(Material.BuildContext context, String text, int delay) {
 		Material.Scaffold.of(context).showSnackBar(Material.SnackBar(
-			content: Material.Text(text),
+			content: Material.Text(text), duration: Duration(milliseconds: delay),
 		));
 	}
 }

@@ -23,6 +23,16 @@ class CreateForm extends StatelessWidget {
 		this.password = pass;
 	}
 	
+	getAppBar(BuildContext context) {
+		if(this.vaultExists) {
+			return AppBar(
+				backgroundColor: theme.getTheme()["accentColor"],
+				elevation: 0.0,
+				leading: getBackButton(context),
+			);
+		}
+	}
+	
 	@override
 	Widget build(BuildContext context) {
 		final inputPassword = TextEditingController(text: this.password);
@@ -30,11 +40,7 @@ class CreateForm extends StatelessWidget {
 		
 		return new Scaffold(
 			backgroundColor: theme.getTheme()["backgroundColorLight"],
-			appBar: AppBar(
-				backgroundColor: theme.getTheme()["accentColor"],
-				elevation: 0.0,
-				leading: getBackButton(context),
-			),
+			appBar: getAppBar(context),
 			body: Builder(
 				builder: (context) =>
 					ListView(
@@ -182,11 +188,11 @@ class CreateForm extends StatelessWidget {
 																);
 															}
 															else {
-																utils.notify(context, "Passwords didn't match.");
+																utils.notify(context, "Passwords didn't match.", 4000);
 															}
 														}
 														else {
-															utils.notify(context, "Please fill out both fields.");
+															utils.notify(context, "Please fill out both fields.", 4000);
 														}
 													},
 													child: Card(

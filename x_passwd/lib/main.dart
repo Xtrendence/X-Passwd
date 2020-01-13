@@ -27,12 +27,12 @@ void main() async {
     
     if(vaultExists) {
         runApp(App(LoginForm(theme), list));
-        theme.statusColorBackground();
     }
     else {
         runApp(App(CreateForm(theme, vaultExists), list));
-        theme.statusColorAccent();
     }
+    
+    theme.statusColorBackground();
 }
 
 class App extends StatefulWidget {

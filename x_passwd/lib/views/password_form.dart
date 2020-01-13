@@ -167,7 +167,7 @@ class PasswordFormState extends State<PasswordForm> {
 																onPressed: () async {
 																	if(inputTitle.text.toString().trim() != "") {
 																		Clipboard.setData(new ClipboardData(text: inputTitle.text.toString()));
-																		utils.notify(builderContext, "Copied to clipboard.");
+																		utils.notify(builderContext, "Copied to clipboard.", 4000);
 																	}
 																	FocusScope.of(builderContext).requestFocus(new FocusNode());
 																},
@@ -208,7 +208,7 @@ class PasswordFormState extends State<PasswordForm> {
 																onPressed: () async {
 																	if(inputURL.text.toString().trim() != "") {
 																		Clipboard.setData(new ClipboardData(text: inputURL.text.toString()));
-																		utils.notify(builderContext, "Copied to clipboard.");
+																		utils.notify(builderContext, "Copied to clipboard.", 4000);
 																	}
 																	FocusScope.of(builderContext).requestFocus(new FocusNode());
 																},
@@ -293,7 +293,7 @@ class PasswordFormState extends State<PasswordForm> {
 																onPressed: () async {
 																	if(inputNotes.text.toString().trim() != "") {
 																		Clipboard.setData(new ClipboardData(text: inputNotes.text.toString()));
-																		utils.notify(builderContext, "Copied to clipboard.");
+																		utils.notify(builderContext, "Copied to clipboard.", 4000);
 																	}
 																	FocusScope.of(builderContext).requestFocus(new FocusNode());
 																},
@@ -328,7 +328,7 @@ class PasswordFormState extends State<PasswordForm> {
 											theme.statusColorAccent();
 										}
 										else {
-											utils.notify(builderContext, "Title and password need to be provided.");
+											utils.notify(builderContext, "Title and password need to be provided.", 4000);
 										}
 									},
 									child: Card(

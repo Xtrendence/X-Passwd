@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:x_passwd/main.dart';
 import 'package:x_passwd/theme.dart';
@@ -251,7 +252,8 @@ class Settings extends StatelessWidget {
 																padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
 																child: InkWell(
 																	onTap: () async {
-																	
+																		String filePath = await utils.exportVault();
+																		utils.notify(builderContext, "A backup of your vault has been saved to: " + filePath, 8000);
 																	},
 																	child: Container(
 																		decoration: BoxDecoration(
@@ -461,11 +463,11 @@ class Settings extends StatelessWidget {
 																							);
 																						}
 																						else {
-																							utils.notify(context, "Passwords didn't match.");
+																							utils.notify(context, "Passwords didn't match.", 4000);
 																						}
 																					}
 																					else {
-																						utils.notify(context, "Please fill out both fields.");
+																						utils.notify(context, "Please fill out both fields.", 4000);
 																					}
 																				},
 																				child: Container(
