@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:x_passwd/main.dart';
 import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/utils.dart';
+import 'package:x_passwd/views/import_vault.dart';
 import 'package:x_passwd/views/login.dart';
 
 Utils utils = new Utils();
@@ -219,7 +220,11 @@ class Settings extends StatelessWidget {
 																						),
 																						FlatButton(
 																							onPressed: () async {
-																								String filePath = await FilePicker.getFilePath(type: FileType.ANY);
+																								Navigator.push(
+																									context,
+																									MaterialPageRoute(builder: (context) => ImportVault(theme))
+																								);
+																								theme.statusColorAccent();
 																							},
 																							child: Text("Import", style: TextStyle(
 																								fontWeight: FontWeight.bold,

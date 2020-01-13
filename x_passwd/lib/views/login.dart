@@ -10,7 +10,7 @@ import 'package:x_passwd/views/password_list.dart';
 
 import '../utils.dart';
 
-
+Utils utils = new Utils();
 
 class LoginForm extends StatelessWidget {
 	AppTheme theme;
@@ -217,25 +217,28 @@ class LoginForm extends StatelessWidget {
 		);
 	}
 	login(BuildContext context) async {
-		Utils utils = new Utils();
-		
-		String password = inputPassword.text.toString().trim();
-		String currentPassword = await utils.getPassword();
-		
-		String list = await utils.read();
-		
-		if(password == currentPassword) {
-			inputPassword.clear();
+		try {
+			String password = inputPassword.text.toString().trim();
+			String currentPassword = await utils.getPassword();
 			
-			Navigator.push(
-				context,
-				MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
-			);
+			String list = await utils.read();
 			
-			theme.statusColorAccent();
+			if(password == currentPassword) {
+				inputPassword.clear();
+				
+				Navigator.push(
+					context,
+					MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
+				);
+				
+				theme.statusColorAccent();
+			}
+			else {
+				utils.notify(context, "Wrong password.", 4000);
+			}
 		}
-		else {
-			utils.notify(context, "Wrong password.", 4000);
+		catch(e) {
+			utils.notify(context, "Your vault seems to be corrupted.", 4000);
 		}
 	}
 }

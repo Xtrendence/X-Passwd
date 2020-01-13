@@ -17,8 +17,6 @@ void main() async {
     
     Utils utils = new Utils();
     
-    String list = await utils.read();
-    
     bool vaultExists = await utils.vaultExists();
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -26,10 +24,10 @@ void main() async {
     AppTheme theme = new AppTheme(scheme);
     
     if(vaultExists) {
-        runApp(App(LoginForm(theme), list));
+        runApp(App(LoginForm(theme)));
     }
     else {
-        runApp(App(CreateForm(theme, vaultExists), list));
+        runApp(App(CreateForm(theme, vaultExists)));
     }
     
     theme.statusColorBackground();
@@ -37,11 +35,9 @@ void main() async {
 
 class App extends StatefulWidget {
     StatelessWidget page;
-    String passwords;
     
-    App(StatelessWidget form, String list) {
+    App(StatelessWidget form) {
         this.page = form;
-        this.passwords = list;
     }
 
     @override

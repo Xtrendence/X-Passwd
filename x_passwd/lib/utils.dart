@@ -32,7 +32,9 @@ class Utils {
 	read() async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
 		
-		Map<String, String> stored = await storage.readAll();
+		Map<String, dynamic> stored = await storage.readAll();
+		
+		print(stored);
 		
 		stored.remove("password");
 		
@@ -128,7 +130,7 @@ class Utils {
 		
 		String hash = base64.encode(await argon2.argon2id(pass, salt));
 		
-		Map<String, String> result = { "hash":hash, "salt":base64.encode(salt) };
+		Map<String, dynamic> result = { "hash":hash, "salt":base64.encode(salt) };
 		
 		return result;
 	}
@@ -146,7 +148,7 @@ class Utils {
 	setPassword(String password) async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
 		await storage.deleteAll();
-		await storage.write(key:"password", value:password);
+		await storage.write(key: "password", value: password);
 	}
 	
 	changePassword(String password) async {
@@ -156,7 +158,7 @@ class Utils {
 	exportVault() async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
 		
-		Map<String, String> stored = await storage.readAll();
+		Map<String, dynamic> stored = await storage.readAll();
 		
 		stored.remove("password");
 		
@@ -169,8 +171,63 @@ class Utils {
 		return filePath;
 	}
 	
-	importVault(String exportedVault) {
+	importVault(String vault, String password) async {
+		FlutterSecureStorage storage = new FlutterSecureStorage();
+		Map<String, dynamic> currentVault = await storage.readAll();
+		await storage.deleteAll();
+		
+		bool valid = true;
+		
+		try {
+			Map<String, dynamic> encryptedItems = jsonDecode(vault);
+			List ids = encryptedItems.keys.toList();
+			
+			for(int i = 0; i < ids.length; i++) {
+				String key = ids[i];
+				Map<String, dynamic> value = jsonDecode(encryptedItems[key]);
+				if(value.containsKey("ciphertext") && value.containsKey("iv") && value.containsKey("salt")) {
+					try {
+						String ciphertext = value["ciphertext"];
+						IV iv = IV.fromBase64(value["iv"]);
+						Uint8List salt = base64.decode(value["salt"]);
+						String hash = await argonWithSalt(password, salt);
+						
+						await aesDecrypt(ciphertext, hash, iv);
+						
+						await storage.write(key: key, value: jsonEncode(value));
+					}
+					catch(e) {
+						valid = false;
+					}
+				}
+				else {
+					valid = false;
+				}
+			}
+			
+			if(!valid) {
+				await restoreVault(currentVault);
+			}
+			else {
+				await storage.write(key: "password", value: password);
+			}
+		}
+		catch(e) {
+			await restoreVault(currentVault);
+		}
+		
+		return valid;
+	}
 	
+	restoreVault(Map currentVault) async {
+		FlutterSecureStorage storage = new FlutterSecureStorage();
+		await storage.deleteAll();
+		List keys = currentVault.keys.toList();
+		for(int i = 0; i < keys.length; i++) {
+			String key = keys[i];
+			String value = currentVault[keys[i]];
+			await storage.write(key: key, value: value);
+		}
 	}
 	
 	deleteVault() async {
@@ -185,7 +242,7 @@ class Utils {
 	
 	vaultExists() async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
-		Map<String, String> values = await storage.readAll();
+		Map<String, dynamic> values = await storage.readAll();
 		if(values.keys.length > 0) {
 			return true;
 		}

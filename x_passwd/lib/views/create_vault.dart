@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:x_passwd/main.dart';
 import 'package:x_passwd/theme.dart';
 import 'package:x_passwd/utils.dart';
+import 'package:x_passwd/views/import_vault.dart';
 import 'package:x_passwd/views/login.dart';
 import 'package:x_passwd/views/password_list.dart';
 
@@ -50,7 +51,7 @@ class CreateForm extends StatelessWidget {
 								crossAxisAlignment: CrossAxisAlignment.center,
 								children: <Widget>[
 									Padding(
-										padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+										padding: const EdgeInsets.fromLTRB(10, 60, 10, 0),
 										child: Container(
 											child: Align(
 												alignment: Alignment.bottomCenter,
@@ -222,8 +223,43 @@ class CreateForm extends StatelessWidget {
 												alignment: Alignment.bottomCenter,
 												child: InkWell(
 													onTap: () {
-														inputPassword.clear();
-														inputPasswordRepeat.clear();
+														showDialog(
+															context: context,
+															builder: (BuildContext context) {
+																return AlertDialog(
+																	title: Text("Warning"),
+																	content: Text("Importing a vault will overwrite any existing ones. Are you sure you want to continue?"),
+																	actions: [
+																		FlatButton(
+																			onPressed: () {
+																				Navigator.of(context).pop();
+																			},
+																			child: Text("Cancel", style: TextStyle(
+																				fontWeight: FontWeight.bold,
+																				color: theme.getTheme()["accentColor"],
+																				fontSize: 18
+																			)),
+																		),
+																		FlatButton(
+																			onPressed: () async {
+																				inputPassword.clear();
+																				inputPasswordRepeat.clear();
+																				Navigator.push(
+																					context,
+																					MaterialPageRoute(builder: (context) => ImportVault(theme))
+																				);
+																				theme.statusColorAccent();
+																			},
+																			child: Text("Import", style: TextStyle(
+																				fontWeight: FontWeight.bold,
+																				color: theme.getTheme()["accentColorDark"],
+																				fontSize: 18
+																			)),
+																		),
+																	],
+																);
+															},
+														);
 													},
 													child: Card(
 														color: theme.getTheme()["accentColorLight"],
