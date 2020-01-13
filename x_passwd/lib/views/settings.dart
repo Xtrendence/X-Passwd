@@ -454,7 +454,33 @@ class Settings extends StatelessWidget {
 																											),
 																											FlatButton(
 																												onPressed: () async {
-																												
+																													bool changed = await utils.changePassword(newPassword);
+																													if(changed) {
+																														showDialog(
+																															context: context,
+																															builder: (BuildContext context) {
+																																return AlertDialog(
+																																	title: Text("Restart Required"),
+																																	content: Text("Your password has been changed. This requires the app to be restarted."),
+																																	actions: [
+																																		FlatButton(
+																																			onPressed: () async {
+																																				SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+																																			},
+																																			child: Text("Restart", style: TextStyle(
+																																				fontWeight: FontWeight.bold,
+																																				color: theme.getTheme()["accentColorDark"],
+																																				fontSize: 18
+																																			)),
+																																		),
+																																	],
+																																);
+																															},
+																														);
+																													}
+																													else {
+																														utils.notify(builderContext, "Your password couldn't be changed.", 5000);
+																													}
 																												},
 																												child: Text("Confirm", style: TextStyle(
 																													fontWeight: FontWeight.bold,
@@ -468,11 +494,11 @@ class Settings extends StatelessWidget {
 																							);
 																						}
 																						else {
-																							utils.notify(context, "Passwords didn't match.", 4000);
+																							utils.notify(builderContext, "Passwords didn't match.", 4000);
 																						}
 																					}
 																					else {
-																						utils.notify(context, "Please fill out both fields.", 4000);
+																						utils.notify(builderContext, "Please fill out both fields.", 4000);
 																					}
 																				},
 																				child: Container(

@@ -34,8 +34,6 @@ class Utils {
 		
 		Map<String, dynamic> stored = await storage.readAll();
 		
-		print(stored);
-		
 		stored.remove("password");
 		
 		List ids = stored.keys.toList();
@@ -151,8 +149,66 @@ class Utils {
 		await storage.write(key: "password", value: password);
 	}
 	
-	changePassword(String password) async {
-	
+	changePassword(String newPassword) async {
+		FlutterSecureStorage storage = new FlutterSecureStorage();
+		
+		String currentPassword = await getPassword();
+		
+		Map<String, dynamic> currentVault = await storage.readAll();
+		
+		bool valid = true;
+		
+		try {
+			Map<String, dynamic> vault = await storage.readAll();
+			
+			await vault.remove("password");
+			
+			List keys = vault.keys.toList();
+			
+			for(int i = 0; i < keys.length; i++) {
+				String id = keys[i];
+				
+				if(id != "password") {
+					Map<String, dynamic> item = jsonDecode(vault[id]);
+					String ciphertext = item["ciphertext"];
+					IV iv = IV.fromBase64(item["iv"]);
+					Uint8List salt = base64.decode(item["salt"]);
+					
+					String hash = await argonWithSalt(currentPassword, salt);
+					String plaintext = await aesDecrypt(ciphertext, hash, iv);
+					
+					String encrypted = await aesEncrypt(plaintext, newPassword);
+					
+					Map<String, dynamic> newItem = jsonDecode(encrypted);
+					String newCiphertext = newItem["ciphertext"];
+					IV newIV = IV.fromBase64(newItem["iv"]);
+					Uint8List newSalt = base64.decode(newItem["salt"]);
+					
+					String newHash = await argonWithSalt(newPassword, newSalt);
+					
+					if(await aesCheck(ciphertext, hash, iv) && await aesCheck(newCiphertext, newHash, newIV)) {
+						await storage.write(key: id, value: encrypted);
+					}
+					else {
+						valid = false;
+					}
+				}
+			}
+		}
+		catch(e) {
+			valid = false;
+			print(e);
+		}
+		
+		if(!valid) {
+			restoreVault(currentVault);
+		}
+		else {
+			await storage.delete(key: "password");
+			await storage.write(key: "password", value: newPassword);
+		}
+		
+		return valid;
 	}
 	
 	exportVault() async {
@@ -192,9 +248,12 @@ class Utils {
 						Uint8List salt = base64.decode(value["salt"]);
 						String hash = await argonWithSalt(password, salt);
 						
-						await aesDecrypt(ciphertext, hash, iv);
-						
-						await storage.write(key: key, value: jsonEncode(value));
+						if(await aesCheck(ciphertext, hash, iv)) {
+							await storage.write(key: key, value: jsonEncode(value));
+						}
+						else {
+							valid = false;
+						}
 					}
 					catch(e) {
 						valid = false;
@@ -216,6 +275,17 @@ class Utils {
 			await restoreVault(currentVault);
 		}
 		
+		return valid;
+	}
+	
+	aesCheck(String ciphertext, String password, IV iv) async {
+		bool valid = true;
+		try {
+			aesDecrypt(ciphertext, password, iv);
+		}
+		catch(e) {
+			valid = false;
+		}
 		return valid;
 	}
 	
