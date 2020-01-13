@@ -151,6 +151,14 @@ class Utils {
 	
 	}
 	
+	exportVault() async {
+	
+	}
+	
+	importVault(String exportedVault) {
+	
+	}
+	
 	deleteVault() async {
 		FlutterSecureStorage storage = new FlutterSecureStorage();
 		await storage.deleteAll();

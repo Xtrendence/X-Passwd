@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -198,7 +199,37 @@ class Settings extends StatelessWidget {
 																padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
 																child: InkWell(
 																	onTap: () async {
-																	
+																		showDialog(
+																			context: context,
+																			builder: (BuildContext context) {
+																				return AlertDialog(
+																					title: Text("Warning"),
+																					content: Text("Importing a vault will overwrite the existing one. Are you sure you want to continue?"),
+																					actions: [
+																						FlatButton(
+																							onPressed: () {
+																								Navigator.of(context).pop();
+																							},
+																							child: Text("Cancel", style: TextStyle(
+																								fontWeight: FontWeight.bold,
+																								color: theme.getTheme()["accentColor"],
+																								fontSize: 18
+																							)),
+																						),
+																						FlatButton(
+																							onPressed: () async {
+																								String filePath = await FilePicker.getFilePath(type: FileType.ANY);
+																							},
+																							child: Text("Import", style: TextStyle(
+																								fontWeight: FontWeight.bold,
+																								color: theme.getTheme()["accentColorDark"],
+																								fontSize: 18
+																							)),
+																						),
+																					],
+																				);
+																			},
+																		);
 																	},
 																	child: Container(
 																		decoration: BoxDecoration(
@@ -262,7 +293,7 @@ class Settings extends StatelessWidget {
 																						FlatButton(
 																							onPressed: () async {
 																								await utils.deleteVault();
-																								SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+																								exit(0);
 																							},
 																							child: Text("Delete", style: TextStyle(
 																								fontWeight: FontWeight.bold,
