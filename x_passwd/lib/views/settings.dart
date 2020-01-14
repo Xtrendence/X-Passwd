@@ -18,6 +18,7 @@ class Settings extends StatelessWidget {
 	AppTheme theme;
 	final inputPassword = TextEditingController();
 	final inputPasswordRepeat = TextEditingController();
+	bool interactionEnabled = true;
 	
 	Settings(AppTheme appTheme) {
 		this.theme = appTheme;
@@ -454,32 +455,36 @@ class Settings extends StatelessWidget {
 																											),
 																											FlatButton(
 																												onPressed: () async {
-																													bool changed = await utils.changePassword(newPassword);
-																													if(changed) {
-																														showDialog(
-																															context: context,
-																															builder: (BuildContext context) {
-																																return AlertDialog(
-																																	title: Text("Restart Required"),
-																																	content: Text("Your password has been changed. This requires the app to be restarted."),
-																																	actions: [
-																																		FlatButton(
-																																			onPressed: () async {
-																																				SystemChannels.platform.invokeMethod("SystemNavigator.pop");
-																																			},
-																																			child: Text("Restart", style: TextStyle(
-																																				fontWeight: FontWeight.bold,
-																																				color: theme.getTheme()["accentColorDark"],
-																																				fontSize: 18
-																																			)),
-																																		),
-																																	],
-																																);
-																															},
-																														);
-																													}
-																													else {
-																														utils.notify(builderContext, "Your password couldn't be changed.", 5000);
+																													if(this.interactionEnabled) {
+																														this.interactionEnabled = false;
+																														bool changed = await utils.changePassword(newPassword);
+																														if(changed) {
+																															showDialog(
+																																context: context,
+																																builder: (BuildContext context) {
+																																	return AlertDialog(
+																																		title: Text("Restart Required"),
+																																		content: Text("Your password has been changed. This requires the app to be restarted."),
+																																		actions: [
+																																			FlatButton(
+																																				onPressed: () async {
+																																					SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+																																				},
+																																				child: Text("Restart", style: TextStyle(
+																																					fontWeight: FontWeight.bold,
+																																					color: theme.getTheme()["accentColorDark"],
+																																					fontSize: 18
+																																				)),
+																																			),
+																																		],
+																																	);
+																																},
+																															);
+																														}
+																														else {
+																															utils.notify(builderContext, "Your password couldn't be changed.", 5000);
+																														}
+																														this.interactionEnabled = true;
 																													}
 																												},
 																												child: Text("Confirm", style: TextStyle(

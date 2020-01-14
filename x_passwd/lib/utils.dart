@@ -108,8 +108,8 @@ class Utils {
 		return jsonEncode({ "ciphertext":encrypted, "iv":iv.base64, "salt":argonHash["salt"] });
 	}
 	
-	aesDecrypt(String ciphertext, String password, IV iv) async {
-		Key key = Key.fromUtf8(password);
+	aesDecrypt(String ciphertext, String hash, IV iv) async {
+		Key key = Key.fromUtf8(hash);
 		
 		Encrypter aes = Encrypter(AES(key, mode: AESMode.ctr));
 		
@@ -241,7 +241,9 @@ class Utils {
 						String salt = value["salt"];
 						String hash = await pbkdf2WithSalt(password, salt);
 						
-						if(await aesCheck(ciphertext, hash, iv)) {
+						Map<String, dynamic> item = jsonDecode(await aesDecrypt(ciphertext, hash, iv));
+						
+						if(item.containsKey("title") && item.containsKey("url") && item.containsKey("password") && item.containsKey("notes")) {
 							await storage.write(key: key, value: jsonEncode(value));
 						}
 						else {

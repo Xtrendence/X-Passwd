@@ -52,6 +52,8 @@ class PasswordFormState extends State<PasswordForm> {
 	String initialPassword = "";
 	String initialNotes = "";
 	
+	bool interactionEnabled = true;
+	
 	void toggleObscurity(String currentTitleValue, String currentURLValue, String currentPasswordValue, String currentNotesValue) {
 		setState(() {
 			obscurePassword = !obscurePassword;
@@ -124,17 +126,24 @@ class PasswordFormState extends State<PasswordForm> {
 										),
 										FlatButton(
 											onPressed: () async {
-												Utils utils = new Utils();
-												
-												await utils.remove(widget.passwordID);
-												
-												String list = await utils.read();
-												
-												Navigator.push(
-													context,
-													MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
-												);
-												theme.statusColorAccent();
+												if(this.interactionEnabled) {
+													this.interactionEnabled = false;
+													
+													Utils utils = new Utils();
+													
+													await utils.remove(widget.passwordID);
+													
+													String list = await utils.read();
+													
+													Navigator.push(
+														context,
+														MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
+													);
+													
+													this.interactionEnabled = true;
+													
+													theme.statusColorAccent();
+												}
 											},
 											child: Text("Delete", style: TextStyle(
 												fontWeight: FontWeight.bold,
@@ -325,25 +334,30 @@ class PasswordFormState extends State<PasswordForm> {
 								padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
 								child: InkWell(
 									onTap: () async {
-										if(inputTitle.text.toString().trim() != "" && inputPassword.text.toString().trim() != "") {
-											if(action == "add") {
-												await utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+										if(this.interactionEnabled) {
+											if(inputTitle.text.toString().trim() != "" && inputPassword.text.toString().trim() != "") {
+												this.interactionEnabled = false;
+												if(action == "add") {
+													await utils.save(inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+												}
+												else if(action == "edit") {
+													await utils.edit(widget.passwordID, inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+												}
+												
+												String list = await utils.read();
+												
+												Navigator.push(
+													builderContext,
+													MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
+												);
+												
+												this.interactionEnabled = true;
+												
+												theme.statusColorAccent();
 											}
-											else if(action == "edit") {
-												await utils.edit(widget.passwordID, inputTitle.text.toString(), inputURL.text.toString(), inputPassword.text.toString(), inputNotes.text.toString());
+											else {
+												utils.notify(builderContext, "Title and password need to be provided.", 4000);
 											}
-											
-											String list = await utils.read();
-											
-											Navigator.push(
-												builderContext,
-												MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
-											);
-											
-											theme.statusColorAccent();
-										}
-										else {
-											utils.notify(builderContext, "Title and password need to be provided.", 4000);
 										}
 									},
 									child: Card(
