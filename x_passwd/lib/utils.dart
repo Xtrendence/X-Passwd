@@ -3,9 +3,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:encrypt/encrypt.dart';
-import 'package:encryptions/encryptions.dart' as Enc;
 import 'package:flutter/material.dart' as Material;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:password_hash/password_hash.dart';
+import 'package:password_hash/pbkdf2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:randombytes/randombytes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,9 +46,9 @@ class Utils {
 			
 			String ciphertext = item["ciphertext"];
 			IV iv = IV.fromBase64(item["iv"]);
-			Uint8List salt = base64.decode(item["salt"]);
+			String salt = item["salt"];
 			
-			String hash = await argonWithSalt(await getPassword(), salt);
+			String hash = await pbkdf2WithSalt(await getPassword(), salt);
 			
 			String plaintext = await aesDecrypt(ciphertext, hash, iv);
 			
@@ -94,7 +95,7 @@ class Utils {
 	}
 	
 	aesEncrypt(String plaintext, String password) async {
-		Map<String, dynamic> argonHash = await argon(password);
+		Map<String, dynamic> argonHash = await pbkdf2(password);
 		String hash = argonHash["hash"];
 		
 		Key key = Key.fromUtf8(hash);
@@ -119,27 +120,19 @@ class Utils {
 		return decrypted;
 	}
 	
-	argon(String password) async {
-		Uint8List pass = utf8.encode(password);
+	pbkdf2(String password) async {
+		PBKDF2 generator = new PBKDF2();
+		String salt = Salt.generateAsBase64String(32);
+		String hash = generator.generateBase64Key(password, salt, 12000, 22);
 		
-		Uint8List salt = utf8.encode(base64.encode(randomBytes(16)));
-		
-		Enc.Argon2 argon2 = Enc.Argon2(iterations: 16, hashLength: 22, memory: 256, parallelism: 2);
-		
-		String hash = base64.encode(await argon2.argon2id(pass, salt));
-		
-		Map<String, dynamic> result = { "hash":hash, "salt":base64.encode(salt) };
+		Map<String, dynamic> result = { "hash":hash, "salt":salt };
 		
 		return result;
 	}
 	
-	argonWithSalt(String password, Uint8List salt) async {
-		Uint8List pass = utf8.encode(password);
-		
-		Enc.Argon2 argon2 = Enc.Argon2(iterations: 16, hashLength: 22, memory: 256, parallelism: 2);
-		
-		String hash = base64.encode(await argon2.argon2id(pass, salt));
-		
+	pbkdf2WithSalt(String password, String salt) async {
+		PBKDF2 generator = new PBKDF2();
+		String hash = generator.generateBase64Key(password, salt, 12000, 22);
 		return hash;
 	}
 	
@@ -172,9 +165,9 @@ class Utils {
 					Map<String, dynamic> item = jsonDecode(vault[id]);
 					String ciphertext = item["ciphertext"];
 					IV iv = IV.fromBase64(item["iv"]);
-					Uint8List salt = base64.decode(item["salt"]);
+					String salt = item["salt"];
 					
-					String hash = await argonWithSalt(currentPassword, salt);
+					String hash = await pbkdf2WithSalt(currentPassword, salt);
 					String plaintext = await aesDecrypt(ciphertext, hash, iv);
 					
 					String encrypted = await aesEncrypt(plaintext, newPassword);
@@ -182,9 +175,9 @@ class Utils {
 					Map<String, dynamic> newItem = jsonDecode(encrypted);
 					String newCiphertext = newItem["ciphertext"];
 					IV newIV = IV.fromBase64(newItem["iv"]);
-					Uint8List newSalt = base64.decode(newItem["salt"]);
+					String newSalt = newItem["salt"];
 					
-					String newHash = await argonWithSalt(newPassword, newSalt);
+					String newHash = await pbkdf2WithSalt(newPassword, newSalt);
 					
 					if(await aesCheck(ciphertext, hash, iv) && await aesCheck(newCiphertext, newHash, newIV)) {
 						await storage.write(key: id, value: encrypted);
@@ -245,8 +238,8 @@ class Utils {
 					try {
 						String ciphertext = value["ciphertext"];
 						IV iv = IV.fromBase64(value["iv"]);
-						Uint8List salt = base64.decode(value["salt"]);
-						String hash = await argonWithSalt(password, salt);
+						String salt = value["salt"];
+						String hash = await pbkdf2WithSalt(password, salt);
 						
 						if(await aesCheck(ciphertext, hash, iv)) {
 							await storage.write(key: key, value: jsonEncode(value));

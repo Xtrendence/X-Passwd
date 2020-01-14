@@ -47,32 +47,47 @@ class PasswordForm extends StatefulWidget {
 
 class PasswordFormState extends State<PasswordForm> {
 	bool obscurePassword = true;
+	String initialTitle = "";
+	String initialURL = "";
 	String initialPassword = "";
+	String initialNotes = "";
 	
-	void toggleObscurity(TextEditingController controller, String currentValue) {
+	void toggleObscurity(String currentTitleValue, String currentURLValue, String currentPasswordValue, String currentNotesValue) {
 		setState(() {
 			obscurePassword = !obscurePassword;
-			initialPassword = currentValue;
+			initialTitle = currentTitleValue;
+			initialURL = currentURLValue;
+			initialPassword = currentPasswordValue;
+			initialNotes = currentNotesValue;
 		});
 	}
 	
 	@override
 	Widget build(BuildContext context) {
 		String action = widget.action;
-		String processedPassword = widget.currentPassword;
 		
-		var inputTitle = TextEditingController(text: widget.currentTitle);
-		var inputURL = TextEditingController(text: widget.currentUrl);
+		String processedTitle = widget.currentTitle;
+		String processedURL = widget.currentUrl;
+		String processedPassword = widget.currentPassword;
+		String processedNotes = widget.currentNotes;
 		
 		if(action == "edit") {
+			processedTitle = widget.currentTitle;
+			processedURL = widget.currentUrl;
 			processedPassword = widget.currentPassword;
+			processedNotes = widget.currentNotes;
 		}
 		else {
+			processedTitle = initialTitle;
+			processedURL = initialURL;
 			processedPassword = initialPassword;
+			processedNotes = initialNotes;
 		}
-		var inputPassword = TextEditingController(text: processedPassword);
 		
-		var inputNotes = TextEditingController(text: widget.currentNotes);
+		var inputTitle = TextEditingController(text: processedTitle);
+		var inputURL = TextEditingController(text: processedURL);
+		var inputPassword = TextEditingController(text: processedPassword);
+		var inputNotes = TextEditingController(text: processedNotes);
 		
 		return Scaffold(
 			backgroundColor: theme.getTheme()["backgroundColorLight"],
@@ -248,7 +263,7 @@ class PasswordFormState extends State<PasswordForm> {
 															child: IconButton(
 																icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off, size: 32),
 																onPressed: () async {
-																	toggleObscurity(inputPassword, inputPassword.text.toString().trim());
+																	toggleObscurity(inputTitle.text.toString().trim(), inputURL.text.toString().trim(), inputPassword.text.toString().trim(), inputNotes.text.toString().trim());
 																	FocusScope.of(builderContext).requestFocus(new FocusNode());
 																},
 															),
