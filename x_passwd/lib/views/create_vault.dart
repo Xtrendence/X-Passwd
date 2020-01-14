@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:x_passwd/main.dart';
 import 'package:x_passwd/theme.dart';
@@ -144,49 +145,88 @@ class CreateForm extends StatelessWidget {
 														
 														if(newPassword != "" && repeatPassword != "") {
 															if(newPassword == repeatPassword) {
-																showDialog(
-																	context: context,
-																	builder: (BuildContext context) {
-																		return AlertDialog(
-																			title: Text("Warning"),
-																			content: Text("Creating a vault would overwrite and delete any existing ones."),
-																			actions: [
-																				FlatButton(
-																					onPressed: () {
-																						Navigator.of(context).pop();
-																					},
-																					child: Text("Cancel", style: TextStyle(
-																						fontWeight: FontWeight.bold,
-																						color: theme.getTheme()["accentColor"],
-																						fontSize: 18
-																					)),
-																				),
-																				FlatButton(
-																					onPressed: () async {
-																						await utils.setPassword(newPassword);
-																						
-																						inputPassword.clear();
-																						inputPasswordRepeat.clear();
-																						
-																						String list = await utils.read();
-																						
-																						Navigator.push(
-																							context,
-																							MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
-																						);
-																						
-																						theme.statusColorAccent();
-																					},
-																					child: Text("Confirm", style: TextStyle(
-																						fontWeight: FontWeight.bold,
-																						color: theme.getTheme()["accentColorDark"],
-																						fontSize: 18
-																					)),
-																				),
-																			],
-																		);
-																	},
-																);
+																SharedPreferences preferences = await SharedPreferences.getInstance();
+																if(preferences.containsKey("tosAccepted") && preferences.getBool("tosAccepted") == true) {
+																	showDialog(
+																		context: context,
+																		builder: (BuildContext context) {
+																			return AlertDialog(
+																				title: Text("Warning"),
+																				content: Text("Creating a vault would overwrite and delete any existing ones."),
+																				actions: [
+																					FlatButton(
+																						onPressed: () {
+																							Navigator.of(context).pop();
+																						},
+																						child: Text("Cancel", style: TextStyle(
+																							fontWeight: FontWeight.bold,
+																							color: theme.getTheme()["accentColor"],
+																							fontSize: 18
+																						)),
+																					),
+																					FlatButton(
+																						onPressed: () async {
+																							await utils.setPassword(newPassword);
+																							
+																							inputPassword.clear();
+																							inputPasswordRepeat.clear();
+																							
+																							String list = await utils.read();
+																							
+																							Navigator.push(
+																								context,
+																								MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
+																							);
+																							
+																							theme.statusColorAccent();
+																						},
+																						child: Text("Confirm", style: TextStyle(
+																							fontWeight: FontWeight.bold,
+																							color: theme.getTheme()["accentColorDark"],
+																							fontSize: 18
+																						)),
+																					),
+																				],
+																			);
+																		},
+																	);
+																}
+																else {
+																	showDialog(
+																		context: context,
+																		builder: (BuildContext context) {
+																			return AlertDialog(
+																				title: Text("Terms of Service"),
+																				content: Text("While every step has been taken by the developer to ensure the protection, and the integrity of your passwords, by using this app, you agree that the developer cannot be held accountable for any lost passwords or any other losses."),
+																				actions: [
+																					FlatButton(
+																						onPressed: () {
+																							SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+																						},
+																						child: Text("Disagree", style: TextStyle(
+																							fontWeight: FontWeight.bold,
+																							color: theme.getTheme()["accentColor"],
+																							fontSize: 18
+																						)),
+																					),
+																					FlatButton(
+																						onPressed: () async {
+																							await preferences.setBool("tosAccepted", true);
+																							Navigator.of(context).pop();
+																							inputPassword.text = newPassword;
+																							inputPasswordRepeat.text = repeatPassword;
+																						},
+																						child: Text("Agree", style: TextStyle(
+																							fontWeight: FontWeight.bold,
+																							color: theme.getTheme()["accentColorDark"],
+																							fontSize: 18
+																						)),
+																					),
+																				],
+																			);
+																		},
+																	);
+																}
 															}
 															else {
 																utils.notify(context, "Passwords didn't match.", 4000);
