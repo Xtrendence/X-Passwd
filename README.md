@@ -1,5 +1,7 @@
 # X:/Passwd
 
+![X-Passwd](https://user-images.githubusercontent.com/5298487/72393555-1abdf700-372b-11ea-96eb-e1550927327d.png)
+
 This is a simple, local, and open-source password manager built with the Flutter SDK for Android devices.
 
 #### How does it work?
