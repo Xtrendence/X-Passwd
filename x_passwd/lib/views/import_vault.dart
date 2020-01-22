@@ -32,8 +32,13 @@ class ImportVault extends StatelessWidget {
 							showDialog(
 								context: context,
 								child: AlertDialog(
-									title: Text("Help"),
-									content: Text("Exported vaults are saved in \"" + (await getExternalStorageDirectory()).path + "/\" and have the extension \".passwd\""),
+									backgroundColor: theme.getTheme()["backgroundColorLight"],
+									title: Text("Help", style: TextStyle(
+										color: theme.getTheme()["textColorDark"]
+									)),
+									content: Text("Exported vaults are saved in \"" + (await getExternalStorageDirectory()).path + "/\" and have the extension \".passwd\"", style: TextStyle(
+										color: theme.getTheme()["textColorLight"]
+									)),
 									actions: [
 										FlatButton(
 											onPressed: () {
@@ -107,8 +112,13 @@ class ImportVault extends StatelessWidget {
 																	context: context,
 																	builder: (BuildContext context) {
 																		return AlertDialog(
-																			title: Text("Restart Required"),
-																			content: Text("The selected vault has been imported. This requires the app to be restarted."),
+																			backgroundColor: theme.getTheme()["backgroundColorLight"],
+																			title: Text("Restart Required", style: TextStyle(
+																				color: theme.getTheme()["textColorDark"]
+																			)),
+																			content: Text("The selected vault has been imported. This requires the app to be restarted.", style: TextStyle(
+																				color: theme.getTheme()["textColorLight"]
+																			)),
 																			actions: [
 																				FlatButton(
 																					onPressed: () async {

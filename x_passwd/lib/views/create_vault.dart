@@ -9,6 +9,8 @@ import 'package:x_passwd/views/import_vault.dart';
 import 'package:x_passwd/views/login.dart';
 import 'package:x_passwd/views/password_list.dart';
 
+Utils utils = new Utils();
+
 class CreateForm extends StatelessWidget {
 	AppTheme theme;
 	bool vaultExists;
@@ -138,8 +140,6 @@ class CreateForm extends StatelessWidget {
 												alignment: Alignment.bottomCenter,
 												child: InkWell(
 													onTap: () async {
-														Utils utils = new Utils();
-														
 														String newPassword = inputPassword.text.toString().trim();
 														String repeatPassword = inputPasswordRepeat.text.toString().trim();
 														
@@ -147,57 +147,20 @@ class CreateForm extends StatelessWidget {
 															if(newPassword == repeatPassword) {
 																SharedPreferences preferences = await SharedPreferences.getInstance();
 																if(preferences.containsKey("tosAccepted") && preferences.getBool("tosAccepted") == true) {
-																	showDialog(
-																		context: context,
-																		builder: (BuildContext context) {
-																			return AlertDialog(
-																				title: Text("Warning"),
-																				content: Text("Creating a vault would overwrite and delete any existing ones."),
-																				actions: [
-																					FlatButton(
-																						onPressed: () {
-																							Navigator.of(context).pop();
-																						},
-																						child: Text("Cancel", style: TextStyle(
-																							fontWeight: FontWeight.bold,
-																							color: theme.getTheme()["accentColor"],
-																							fontSize: 18
-																						)),
-																					),
-																					FlatButton(
-																						onPressed: () async {
-																							await utils.setPassword(newPassword);
-																							
-																							inputPassword.clear();
-																							inputPasswordRepeat.clear();
-																							
-																							String list = await utils.read();
-																							
-																							Navigator.push(
-																								context,
-																								MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
-																							);
-																							
-																							theme.statusColorAccent();
-																						},
-																						child: Text("Confirm", style: TextStyle(
-																							fontWeight: FontWeight.bold,
-																							color: theme.getTheme()["accentColorDark"],
-																							fontSize: 18
-																						)),
-																					),
-																				],
-																			);
-																		},
-																	);
+																	showWarning(context, newPassword, inputPassword, inputPasswordRepeat);
 																}
 																else {
 																	showDialog(
 																		context: context,
 																		builder: (BuildContext context) {
 																			return AlertDialog(
-																				title: Text("Terms of Service"),
-																				content: Text("While every step has been taken by the developer to ensure the protection, and the integrity of your passwords, by using this app, you agree that the developer cannot be held accountable for any lost passwords or any other losses."),
+																				backgroundColor: theme.getTheme()["backgroundColorLight"],
+																				title: Text("Terms of Service", style: TextStyle(
+																					color: theme.getTheme()["textColorDark"]
+																				)),
+																				content: Text("While every step has been taken by the developer to ensure the protection, and the integrity of your passwords, by using this app, you agree that the developer cannot be held accountable for any lost passwords or any other losses.", style: TextStyle(
+																					color: theme.getTheme()["textColorLight"]
+																				)),
 																				actions: [
 																					FlatButton(
 																						onPressed: () {
@@ -215,6 +178,7 @@ class CreateForm extends StatelessWidget {
 																							Navigator.of(context).pop();
 																							inputPassword.text = newPassword;
 																							inputPasswordRepeat.text = repeatPassword;
+																							showWarning(context, newPassword, inputPassword, inputPasswordRepeat);
 																						},
 																						child: Text("Agree", style: TextStyle(
 																							fontWeight: FontWeight.bold,
@@ -263,43 +227,7 @@ class CreateForm extends StatelessWidget {
 												alignment: Alignment.bottomCenter,
 												child: InkWell(
 													onTap: () {
-														showDialog(
-															context: context,
-															builder: (BuildContext context) {
-																return AlertDialog(
-																	title: Text("Warning"),
-																	content: Text("Importing a vault will overwrite any existing ones. Are you sure you want to continue?"),
-																	actions: [
-																		FlatButton(
-																			onPressed: () {
-																				Navigator.of(context).pop();
-																			},
-																			child: Text("Cancel", style: TextStyle(
-																				fontWeight: FontWeight.bold,
-																				color: theme.getTheme()["accentColor"],
-																				fontSize: 18
-																			)),
-																		),
-																		FlatButton(
-																			onPressed: () async {
-																				inputPassword.clear();
-																				inputPasswordRepeat.clear();
-																				Navigator.push(
-																					context,
-																					MaterialPageRoute(builder: (context) => ImportVault(theme))
-																				);
-																				theme.statusColorAccent();
-																			},
-																			child: Text("Import", style: TextStyle(
-																				fontWeight: FontWeight.bold,
-																				color: theme.getTheme()["accentColorDark"],
-																				fontSize: 18
-																			)),
-																		),
-																	],
-																);
-															},
-														);
+														showWarning(context, inputPassword.text.toString().trim(), inputPassword, inputPasswordRepeat);
 													},
 													child: Card(
 														color: theme.getTheme()["accentColorLight"],
@@ -326,6 +254,57 @@ class CreateForm extends StatelessWidget {
 						],
 					),
 			)
+		);
+	}
+	
+	showWarning(BuildContext context, String newPassword, TextEditingController inputPassword, TextEditingController inputPasswordRepeat) {
+		showDialog(
+			context: context,
+			builder: (BuildContext context) {
+				return AlertDialog(
+					backgroundColor: theme.getTheme()["backgroundColorLight"],
+					title: Text("Warning", style: TextStyle(
+						color: theme.getTheme()["textColorDark"]
+					)),
+					content: Text("Creating a vault would overwrite and delete any existing ones.", style: TextStyle(
+						color: theme.getTheme()["textColorLight"]
+					)),
+					actions: [
+						FlatButton(
+							onPressed: () {
+								Navigator.of(context).pop();
+							},
+							child: Text("Cancel", style: TextStyle(
+								fontWeight: FontWeight.bold,
+								color: theme.getTheme()["accentColor"],
+								fontSize: 18
+							)),
+						),
+						FlatButton(
+							onPressed: () async {
+								await utils.setPassword(newPassword);
+								
+								inputPassword.clear();
+								inputPasswordRepeat.clear();
+								
+								String list = await utils.read();
+								
+								Navigator.push(
+									context,
+									MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
+								);
+								
+								theme.statusColorAccent();
+							},
+							child: Text("Confirm", style: TextStyle(
+								fontWeight: FontWeight.bold,
+								color: theme.getTheme()["accentColorDark"],
+								fontSize: 18
+							)),
+						),
+					],
+				);
+			},
 		);
 	}
 	

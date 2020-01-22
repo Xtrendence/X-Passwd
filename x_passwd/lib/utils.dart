@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:encrypt/encrypt.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:password_hash/password_hash.dart';
 import 'package:password_hash/pbkdf2.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:random_string/random_string.dart';
 import 'package:randombytes/randombytes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -312,6 +314,14 @@ class Utils {
 			return true;
 		}
 		return false;
+	}
+	
+	generatePassword() async {
+		Random firstSeed = Random.secure();
+		Random secondSeed = Random.secure();
+		Random thirdSeed = Random.secure();
+		String password = randomString(6, provider: CoreRandomProvider.from(firstSeed)) + randomString(6, provider: CoreRandomProvider.from(secondSeed)) + randomString(8, provider: CoreRandomProvider.from(thirdSeed));
+		return password;
 	}
 	
 	generateID() {

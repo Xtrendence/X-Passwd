@@ -75,8 +75,13 @@ class Settings extends StatelessWidget {
 																			context: context,
 																			builder: (BuildContext context) {
 																				return AlertDialog(
-																					title: Text("Warning"),
-																					content: Text("Changing the theme requires the app to restart. Would you like to continue?"),
+																					backgroundColor: theme.getTheme()["backgroundColorLight"],
+																					title: Text("Warning", style: TextStyle(
+																						color: theme.getTheme()["textColorDark"]
+																					)),
+																					content: Text("Changing the theme requires the app to restart. Would you like to continue?", style: TextStyle(
+																						color: theme.getTheme()["textColorLight"]
+																					)),
 																					actions: [
 																						FlatButton(
 																							onPressed: () {
@@ -128,8 +133,13 @@ class Settings extends StatelessWidget {
 																			context: context,
 																			builder: (BuildContext context) {
 																				return AlertDialog(
-																					title: Text("Warning"),
-																					content: Text("Changing the theme requires the app to restart. Would you like to continue?"),
+																					backgroundColor: theme.getTheme()["backgroundColorLight"],
+																					title: Text("Warning", style: TextStyle(
+																						color: theme.getTheme()["textColorDark"]
+																					)),
+																					content: Text("Changing the theme requires the app to restart. Would you like to continue?", style: TextStyle(
+																						color: theme.getTheme()["textColorLight"]
+																					)),
 																					actions: [
 																						FlatButton(
 																							onPressed: () {
@@ -206,8 +216,13 @@ class Settings extends StatelessWidget {
 																			context: context,
 																			builder: (BuildContext context) {
 																				return AlertDialog(
-																					title: Text("Warning"),
-																					content: Text("Importing a vault will overwrite the existing one. Are you sure you want to continue?"),
+																					backgroundColor: theme.getTheme()["backgroundColorLight"],
+																					title: Text("Warning", style: TextStyle(
+																						color: theme.getTheme()["textColorDark"]
+																					)),
+																					content: Text("Importing a vault will overwrite the existing one. Are you sure you want to continue?", style: TextStyle(
+																						color: theme.getTheme()["textColorLight"]
+																					)),
 																					actions: [
 																						FlatButton(
 																							onPressed: () {
@@ -285,8 +300,13 @@ class Settings extends StatelessWidget {
 																			context: context,
 																			builder: (BuildContext context) {
 																				return AlertDialog(
-																					title: Text("Warning"),
-																					content: Text("This will delete all your saved passwords and their details. Are you sure you want to continue?"),
+																					backgroundColor: theme.getTheme()["backgroundColorLight"],
+																					title: Text("Warning", style: TextStyle(
+																						color: theme.getTheme()["textColorDark"]
+																					)),
+																					content: Text("This will delete all your saved passwords and their details. Are you sure you want to continue?", style: TextStyle(
+																						color: theme.getTheme()["textColorLight"]
+																					)),
 																					actions: [
 																						FlatButton(
 																							onPressed: () {
@@ -437,8 +457,13 @@ class Settings extends StatelessWidget {
 																								context: context,
 																								builder: (BuildContext context) {
 																									return AlertDialog(
-																										title: Text("Confirmation"),
-																										content: Text("All your passwords will be encrypted with your new password. Are you sure you want to continue?"),
+																										backgroundColor: theme.getTheme()["backgroundColorLight"],
+																										title: Text("Confirmation", style: TextStyle(
+																											color: theme.getTheme()["textColorDark"]
+																										)),
+																										content: Text("All your passwords will be encrypted with your new password. Are you sure you want to continue?", style: TextStyle(
+																											color: theme.getTheme()["textColorLight"]
+																										)),
 																										actions: [
 																											FlatButton(
 																												onPressed: () {
@@ -463,8 +488,13 @@ class Settings extends StatelessWidget {
 																																context: context,
 																																builder: (BuildContext context) {
 																																	return AlertDialog(
-																																		title: Text("Restart Required"),
-																																		content: Text("Your password has been changed. This requires the app to be restarted."),
+																																		backgroundColor: theme.getTheme()["backgroundColorLight"],
+																																		title: Text("Restart Required", style: TextStyle(
+																																			color: theme.getTheme()["textColorDark"]
+																																		)),
+																																		content: Text("Your password has been changed. This requires the app to be restarted.", style: TextStyle(
+																																			color: theme.getTheme()["textColorLight"]
+																																		)),
 																																		actions: [
 																																			FlatButton(
 																																				onPressed: () async {

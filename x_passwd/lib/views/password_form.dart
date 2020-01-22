@@ -93,70 +93,88 @@ class PasswordFormState extends State<PasswordForm> {
 		
 		return Scaffold(
 			backgroundColor: theme.getTheme()["backgroundColorLight"],
-			appBar: AppBar(
-				title: Text(capitalize(action) + " Password"),
-				backgroundColor: theme.getTheme()["accentColor"],
-				elevation: 0.0,
-				leading: IconButton(
-					icon: Icon(Icons.arrow_back),
-					onPressed: () async {
-						Navigator.of(context).pop();
-						theme.statusColorAccent();
-					}
-				),
-				actions: <Widget>[
-					if(action == "edit") IconButton(
-						icon: Icon(Icons.delete),
-						onPressed: () async {
-							showDialog(
-								context: context,
-								child: AlertDialog(
-									title: Text("Confirmation"),
-									content: Text("Are you sure you want to delete this password?"),
-									actions: [
-										FlatButton(
-											onPressed: () {
-												Navigator.of(context).pop();
-											},
-											child: Text("Cancel", style: TextStyle(
-												fontWeight: FontWeight.bold,
-												color: theme.getTheme()["accentColor"],
-												fontSize: 18
-											)),
-										),
-										FlatButton(
-											onPressed: () async {
-												if(this.interactionEnabled) {
-													this.interactionEnabled = false;
-													
-													Utils utils = new Utils();
-													
-													await utils.remove(widget.passwordID);
-													
-													String list = await utils.read();
-													
-													Navigator.push(
-														context,
-														MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
-													);
-													
-													this.interactionEnabled = true;
-													
-													theme.statusColorAccent();
-												}
-											},
-											child: Text("Delete", style: TextStyle(
-												fontWeight: FontWeight.bold,
-												color: theme.getTheme()["accentColorDark"],
-												fontSize: 18
-											)),
-										),
-									],
+			appBar: PreferredSize(
+				preferredSize: Size.fromHeight(56),
+				child: Builder(
+					builder: (builderContext) =>
+						AppBar(
+							title: Text(capitalize(action) + " Password"),
+							backgroundColor: theme.getTheme()["accentColor"],
+							elevation: 0.0,
+							leading: IconButton(
+								icon: Icon(Icons.arrow_back),
+								onPressed: () async {
+									Navigator.of(context).pop();
+									theme.statusColorAccent();
+								}
+							),
+							actions: <Widget>[
+								IconButton(
+									icon: Icon(Icons.vpn_key),
+									onPressed: () async {
+										Clipboard.setData(new ClipboardData(text: await utils.generatePassword()));
+										utils.notify(builderContext, "Generated password copied to clipboard.", 4000);
+									},
 								),
-							);
-						},
-					)
-				]
+								if(action == "edit") IconButton(
+									icon: Icon(Icons.delete),
+									onPressed: () async {
+										showDialog(
+											context: context,
+											child: AlertDialog(
+												backgroundColor: theme.getTheme()["backgroundColorLight"],
+												title: Text("Confirmation", style: TextStyle(
+													color: theme.getTheme()["textColorDark"]
+												)),
+												content: Text("Are you sure you want to delete this password?", style: TextStyle(
+													color: theme.getTheme()["textColorLight"]
+												)),
+												actions: [
+													FlatButton(
+														onPressed: () {
+															Navigator.of(context).pop();
+														},
+														child: Text("Cancel", style: TextStyle(
+															fontWeight: FontWeight.bold,
+															color: theme.getTheme()["accentColor"],
+															fontSize: 18
+														)),
+													),
+													FlatButton(
+														onPressed: () async {
+															if(this.interactionEnabled) {
+																this.interactionEnabled = false;
+																
+																Utils utils = new Utils();
+																
+																await utils.remove(widget.passwordID);
+																
+																String list = await utils.read();
+																
+																Navigator.push(
+																	context,
+																	MaterialPageRoute(builder: (context) => PasswordList.setPasswordList(theme, list))
+																);
+																
+																this.interactionEnabled = true;
+																
+																theme.statusColorAccent();
+															}
+														},
+														child: Text("Delete", style: TextStyle(
+															fontWeight: FontWeight.bold,
+															color: theme.getTheme()["accentColorDark"],
+															fontSize: 18
+														)),
+													),
+												],
+											),
+										);
+									},
+								),
+							]
+						),
+				),
 			),
 			body: ListView.builder(
 				itemCount: 1,
@@ -265,16 +283,38 @@ class PasswordFormState extends State<PasswordForm> {
 														),
 														labelText: "Password...",
 														border: InputBorder.none,
-														suffixIcon: IconTheme(
-															data: IconThemeData(
-																color: theme.getTheme()["textColorLight"]
-															),
-															child: IconButton(
-																icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off, size: 32),
-																onPressed: () async {
-																	toggleObscurity(inputTitle.text.toString().trim(), inputURL.text.toString().trim(), inputPassword.text.toString().trim(), inputNotes.text.toString().trim());
-																	FocusScope.of(builderContext).requestFocus(new FocusNode());
-																},
+														suffixIcon: Container(
+															width: (action == "edit") ? 96 : 48,
+															child: Row(
+																children: <Widget>[
+																	IconTheme(
+																		data: IconThemeData(
+																			color: theme.getTheme()["textColorLight"]
+																		),
+																		child: IconButton(
+																			icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off, size: 32),
+																			onPressed: () async {
+																				toggleObscurity(inputTitle.text.toString().trim(), inputURL.text.toString().trim(), inputPassword.text.toString().trim(), inputNotes.text.toString().trim());
+																				FocusScope.of(builderContext).requestFocus(new FocusNode());
+																			},
+																		),
+																	),
+																	if(action == "edit") IconTheme(
+																		data: IconThemeData(
+																			color: theme.getTheme()["textColorLight"]
+																		),
+																		child: IconButton(
+																			icon: Icon(Icons.content_paste, size: 32),
+																			onPressed: () async {
+																				if(inputPassword.text.toString().trim() != "") {
+																					Clipboard.setData(new ClipboardData(text: inputPassword.text.toString()));
+																					utils.notify(builderContext, "Copied to clipboard.", 4000);
+																				}
+																				FocusScope.of(builderContext).requestFocus(new FocusNode());
+																			},
+																		),
+																	),
+																],
 															),
 														)
 													)
