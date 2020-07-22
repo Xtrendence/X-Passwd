@@ -1,7 +1,5 @@
 # X:/Passwd
 
-![X-Passwd](https://user-images.githubusercontent.com/5298487/72393555-1abdf700-372b-11ea-96eb-e1550927327d.png)
-
 This is a simple, local, and open-source password manager built with the Flutter SDK for Android devices.
 
 #### How does it work?
@@ -33,3 +31,5 @@ It's available for purchase on the Play Store, and it costs £0.59. Of course yo
 #### Is it safe?
 
 As far as I'm aware, yes, it's secure. But do keep in mind that I'm just a university student who's been programming for the past few years, so if something does go wrong or you do happen to lose your passwords somehow, don't sue me. If you regularly export your vault and keep a backup of it though, it should be completely fine. If something does go wrong, just contact me and I'll try my best to help, though obviously I can't guarantee anything.
+
+![X-Passwd](https://i.imgur.com/hc8nOsg.jpg)
